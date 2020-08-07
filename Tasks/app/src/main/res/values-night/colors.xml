@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--#03DAC5-->
+    <color name="colorPrimary">#322C2C</color>
+    <color name="colorPrimaryDark">#201C1C</color>
+    <color name="colorAccentPrimary">#025C53</color>
+    <color name="colorAccentSecondary">#03DAC5</color>
+    <color name="colorPrimaryText">#F6F6F6</color>
+    <color name="colorSecondaryText">#D8C0C0</color>
+    <color name="colorPrimaryBg">#141923</color>
+    <color name="colorSecondaryBg">#282828</color>
+    <color name="colorUnavailableText">#505050</color>
+</resources>

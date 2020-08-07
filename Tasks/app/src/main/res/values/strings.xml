@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Tasks</string>
+    <string name="title_activity_list_view">ListViewActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <!-- My Strings -->
+    <string name="Save">Save</string>
+    <string name="Delete">Delete</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Lists">Lists</string>
+    <string name="NewListHint">Title of list</string>
+    <string name="AddDetails">Add Details</string>
+    <string name="TaskTitle">Task Title</string>
+    <string name="ListTitle">List Title</string>
+    <string name="MoveTaskTo">Move task to</string>
+    <string name="RenameList">Rename List</string>
+    <string name="DeleteCompletedTasks">Delete Completed Tasks</string>
+    <string name="DeleteList">Delete List</string>
+    <string name="SortBy">Sort by</string>
+    <string name="MyOrder">My order</string>
+    <string name="CreationDate">Creation date</string>
+    <string name="DueDate">Due date</string>
+    <string name="DefaultListDelete">Default List can\'t be deleted</string>
+</resources>
