@@ -149,13 +149,7 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
     @Override
     public void openListAtIndex(int index) {
         manager.setOpenIndex(index);
-        startListActivity();
-    }
-
-    private void startListActivity() {
-        Intent myIntent = new Intent(this, ListViewActivity.class);
-        startActivity(myIntent);
-        finish();
+        onBackPressed();
     }
 
     private void makeToast(String s) {
@@ -165,7 +159,6 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startListActivity();
         finish();
     }
 

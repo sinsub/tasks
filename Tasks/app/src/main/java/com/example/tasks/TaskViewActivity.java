@@ -49,7 +49,6 @@ public class TaskViewActivity extends AppCompatActivity {
         if (complete && manager.getOpenList().completeTaskCount() <= position) {
             makeToast("Error while loading Task View due to wrong extra passed!");
             startListActivity();
-            finish();
         }
 
         if (complete)
@@ -158,13 +157,14 @@ public class TaskViewActivity extends AppCompatActivity {
 
     private void changeList() {
         View dialogView = getLayoutInflater().inflate(R.layout.move_task_to_list_bottom_sheet, null);
-        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        final BottomSheetDialog dialog = new BottomSheetDialog(this);
         dialog.setContentView(dialogView);
         OnRecyclerItemClickListener listener = new OnRecyclerItemClickListener() {
             @Override
             public void onRecyclerItemCLick(int position) {
                 manager.moveTaskToList(task, position);
                 startListActivity();
+                dialog.cancel();
                 finish();
             }
         };
@@ -212,8 +212,7 @@ public class TaskViewActivity extends AppCompatActivity {
     }
 
     private void startListActivity() {
-        Intent myIntent = new Intent(this, ListViewActivity.class);
-        startActivity(myIntent);
+        onBackPressed();
         finish();
     }
 
@@ -224,7 +223,5 @@ public class TaskViewActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startListActivity();
-        finish();
     }
 }

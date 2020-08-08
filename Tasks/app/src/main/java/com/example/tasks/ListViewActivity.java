@@ -483,6 +483,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             @Override
             public void onClick(View v) {
                 manager.deleteTaskList();
+                alertDialog.cancel();
                 makeToast("One list deleted");
                 startShowLists();
             }
@@ -520,7 +521,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             public void onClick(View v) {
                 manager.setOpenListComparator(Manager.MY_ORDER);
                 dialog.cancel();
-                startListView();
+                setListView();
             }
         });
 
@@ -529,7 +530,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             public void onClick(View v) {
                 manager.setOpenListComparator(Manager.CREATED_DATE);
                 dialog.cancel();
-                startListView();
+                setListView();
             }
         });
         dialog.show();
@@ -538,18 +539,10 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
 
 
 
-
     // Methods related to staring a new activity
     public void startShowLists() {
         Intent myIntent = new Intent(this, ShowListsActivity.class);
         startActivity(myIntent);
-        finish();
-    }
-
-    private void startListView() {
-        Intent myIntent = new Intent(this, ListViewActivity.class);
-        startActivity(myIntent);
-        finish();
     }
 
     private void startTaskActivity(int position, boolean complete) {
@@ -557,10 +550,15 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         myIntent.putExtra("task_position", position);
         myIntent.putExtra("task_status", complete);
         startActivity(myIntent);
-        finish();
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        manager = new Manager(this);
+        setListView();
+    }
 
     /*****************************************************
      *  Recycler view ItemTouchHelper
