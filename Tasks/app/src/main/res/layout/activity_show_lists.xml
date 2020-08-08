@@ -95,20 +95,17 @@
             app:srcCompat="@drawable/ic_baseline_arrow_back_24_accent" />
 
         <ImageButton
-            android:id="@+id/imageButton3"
+            android:id="@+id/show_list_view_settings_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="5"
             android:background="@null"
             app:srcCompat="@drawable/ic_baseline_settings_24_white" />
 
-        <ImageButton
-            android:id="@+id/imageButton2"
+        <Space
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:background="@null"
-            app:srcCompat="@drawable/ic_baseline_more_horiz_24_white" />
+            android:layout_weight="5" />
 
         <Space
             android:layout_width="match_parent"

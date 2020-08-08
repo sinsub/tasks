@@ -9,11 +9,13 @@ import java.util.Collections;
 public class User implements Serializable {
     private final ArrayList<TaskList> taskLists;
     private int openIndex;
+    private boolean darkMode;
 
     public User() {
         taskLists = new ArrayList<>();
         taskLists.add(new TaskList("ToDo List"));   // default TaskList
         openIndex = 0;
+        darkMode = true;
     }
 
     public void addTaskList(TaskList taskList) {
@@ -62,6 +64,18 @@ public class User implements Serializable {
     public int numberOfIncompleteTasks(int index) {
         if (index < 0 || index >= taskLists.size()) throw new IllegalArgumentException("Index out of bounds!");
         return taskLists.get(index).incompleteTaskCount();
+    }
+
+    public void setDarkModeOn() {
+        this.darkMode = true;
+    }
+
+    public void setDarkModeOff() {
+        this.darkMode = false;
+    }
+
+    public boolean isDarkModeOn() {
+        return darkMode;
     }
 
     @Override

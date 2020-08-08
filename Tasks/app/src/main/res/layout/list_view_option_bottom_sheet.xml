@@ -20,7 +20,8 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:focusable="true">
 
             <TextView
                 android:layout_width="match_parent"

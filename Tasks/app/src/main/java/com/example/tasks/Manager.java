@@ -25,6 +25,7 @@ public class Manager {
             user = new User();
         }
         openList = user.getTaskList(user.getOpenIndex());
+        write();
     }
 
     public void write() {

@@ -28,4 +28,7 @@
     <string name="CreationDate">Creation date</string>
     <string name="DueDate">Due date</string>
     <string name="DefaultListDelete">Default List can\'t be deleted</string>
+    <string name="Theme">Theme</string>
+    <string name="Dark">Dark</string>
+    <string name="Light">Light</string>
 </resources>

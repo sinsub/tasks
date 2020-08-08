@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,15 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.os.IResultReceiver;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tasks.adapters.RecyclerAdapterTL;
 import com.example.tasks.interfaces.OnListItemClickListener;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
@@ -64,6 +67,15 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
             }
         });
 
+        // Settings image button
+        ImageButton settingsButton = (ImageButton) findViewById(R.id.show_list_view_settings_button);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSettings();
+            }
+        });
+
         setThisView();
     }
 
@@ -89,18 +101,49 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
             public void onClick(View v) {
                 String title = taskListTitleET.getText().toString().trim();
                 if (title.equals("")) {
-                    Toast.makeText(ShowListsActivity.this, "Provide a valid List name", Toast.LENGTH_SHORT).show();
+                    makeToast("Provide a valid List title.");
                     alertDialog.dismiss();
                 } else {
                     manager.addNewList(title);
-                    alertDialog.dismiss();
-                    Toast.makeText(ShowListsActivity.this, "New List added!", Toast.LENGTH_SHORT).show();
-
+                    makeToast("New List added.");
                     recyclerAdapterTL.notifyDataSetChanged();
+                    alertDialog.dismiss();
                 }
             }
         });
         alertDialog.show();
+    }
+
+    private void showSettings() {
+        final View dialogView = getLayoutInflater().inflate(R.layout.settings_bottom_sheet, null);
+        final BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setContentView(dialogView);
+
+        LinearLayout themeOption = (LinearLayout) dialogView.findViewById(R.id.settings_theme_option);
+        TextView themeTV = (TextView) dialogView.findViewById(R.id.settings_theme_option_tv);
+        if (manager.getUser().isDarkModeOn()) {
+            themeTV.setText(R.string.Dark);
+        } else {
+            themeTV.setText(R.string.Light);
+        }
+        themeOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (manager.getUser().isDarkModeOn()) {
+                    manager.getUser().setDarkModeOff();
+                } else {
+                    manager.getUser().setDarkModeOn();
+                }
+                if (manager.getUser().isDarkModeOn()) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }
+                manager.write();
+                dialog.cancel();
+            }
+        });
+        dialog.show();
     }
 
     @Override
@@ -116,7 +159,7 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
     }
 
     private void makeToast(String s) {
-        Toast.makeText(this, "Clicky Clicky neko Ureshi! "+s , Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
     @Override
