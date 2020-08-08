@@ -101,11 +101,11 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
             public void onClick(View v) {
                 String title = taskListTitleET.getText().toString().trim();
                 if (title.equals("")) {
-                    makeToast("Provide a valid List title.");
+                    makeToast("Provide a valid List title");
                     alertDialog.dismiss();
                 } else {
                     manager.addNewList(title);
-                    makeToast("New List added.");
+                    makeToast("New List added");
                     recyclerAdapterTL.notifyDataSetChanged();
                     alertDialog.dismiss();
                 }

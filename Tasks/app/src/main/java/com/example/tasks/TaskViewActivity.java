@@ -148,6 +148,11 @@ public class TaskViewActivity extends AppCompatActivity {
             changeStatusButton.setImageResource(R.drawable.ic_baseline_plus_one_24_respect);
         }
         manager.changeStatusOfTask(task);
+        if (task.isComplete()) {
+            makeToast("Marked task as complete");
+        } else {
+            makeToast("Marked task as incomplete");
+        }
         setView();
     }
 
@@ -190,6 +195,7 @@ public class TaskViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 manager.deleteTask(task);
+                makeToast("Task deleted");
                 alertDialog.cancel();
                 startListActivity();
             }
@@ -212,7 +218,7 @@ public class TaskViewActivity extends AppCompatActivity {
     }
 
     public void makeToast(String str) {
-        Toast.makeText(this, "clicky clicky neko ureshi " + str, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
 
     @Override

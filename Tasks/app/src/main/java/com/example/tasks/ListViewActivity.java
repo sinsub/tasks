@@ -149,12 +149,12 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
                 detail.trim();
                 name = name.trim();
                 if (name.equals("")) {
-                    makeToast("Provide a valid Task title.");
+                    makeToast("Provide a valid Task title");
                     alertDialog.dismiss();
                 } else {
                     manager.addTask(name, detail, null);
                     alertDialog.dismiss();
-                    Toast.makeText(ListViewActivity.this, "New Task added!", Toast.LENGTH_SHORT).show();
+                    makeToast("Task added");
 
                     myAdapterI.notifyDataSetChanged();
                 }
@@ -185,6 +185,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             @Override
             public void onClick(View v) {
                 manager.deleteIncompleteTask(position);
+                makeToast("One Task deleted");
                 myAdapterI.notifyItemRemoved(position);
                 myAdapterI.notifyItemRangeChanged(position, myAdapterI.getItemCount());
                 alertDialog.cancel();
@@ -223,6 +224,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             @Override
             public void onClick(View v) {
                 manager.deleteCompleteTask(position);
+                makeToast("One Task deleted");
                 myAdapterC.notifyItemRemoved(position);
                 myAdapterC.notifyItemRangeChanged(position, myAdapterC.getItemCount());
                 alertDialog.cancel();
@@ -261,6 +263,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             @Override
             public void onClick(View v) {
                 manager.deleteCompletedTasks();
+                makeToast("All complete Tasks from this list deleted");
                 myAdapterC.notifyDataSetChanged();
                 alertDialog.cancel();
             }
@@ -285,8 +288,9 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     @Override
     public void completeTask(int position) {
         boolean deepComplete = manager.setTaskComplete(position);
+        makeToast("One Task marked as complete");
         if (!deepComplete) {
-            makeToast("Some sub-tasks were incomplete!");
+            makeToast("Some sub-tasks were incomplete");
         }
         myAdapterI.notifyItemRemoved(position);
         myAdapterI.notifyItemRangeChanged(position, myAdapterI.getItemCount());
@@ -298,7 +302,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     @Override
     public void incompleteTask(int position) {
         manager.setTaskIncomplete(position);
-
+        makeToast("One Task marked as incomplete");
         myAdapterC.notifyItemRemoved(position);
         myAdapterC.notifyItemRangeChanged(position, myAdapterC.getItemCount());
 
@@ -445,10 +449,11 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             public void onClick(View v) {
                 String title = taskListTitleET.getText().toString().trim();
                 if (title.equals("")) {
-                    Toast.makeText(ListViewActivity.this, "Provide a valid List title.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ListViewActivity.this, "Provide a valid List title", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     manager.renameOpenList(title);
+                    makeToast("List renamed");
                     setListView();
                 }
                 alertDialog.dismiss();
@@ -478,6 +483,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             @Override
             public void onClick(View v) {
                 manager.deleteTaskList();
+                makeToast("One list deleted");
                 startShowLists();
             }
         });
