@@ -2,6 +2,7 @@ package com.example.tasks;
 
 import android.content.Context;
 
+import com.example.tasks.dataStructure.SubTask;
 import com.example.tasks.dataStructure.Task;
 import com.example.tasks.dataStructure.TaskList;
 import com.example.tasks.dataStructure.User;
@@ -189,6 +190,33 @@ public class Manager {
         } else if (comparator == CREATED_DATE) {
             openList.setTaskComparator(Task.CREATED_TIME_ORDER);
         }
+        write();
+    }
+
+
+    /***************************************************
+     * Methods for Sub Tasks
+     **************************************************/
+
+    public void addSubTask(String title, Task task) {
+        if (title == null || task == null) throw new IllegalArgumentException("Null argument!");
+        SubTask subTask = new SubTask(title, null);
+        task.addSubTask(subTask);
+        write();
+    }
+
+    public void completeSubTaskOf(Task task, int index) {
+        task.completeSubTaskAt(index);
+        write();
+    }
+
+    public void deleteIncompleteSubTask(Task task, int index) {
+        task.deleteIncompleteSubTask(index);
+        write();
+    }
+
+    public void changeIncompleteSubTaskTitle(Task task, int index, String title) {
+        task.changeIncompleteSubTaskTitle(index, title);
         write();
     }
 

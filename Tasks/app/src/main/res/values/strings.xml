@@ -31,4 +31,7 @@
     <string name="Theme">Theme</string>
     <string name="Dark">Dark</string>
     <string name="Light">Light</string>
+    <string name="SubTasks">Sub Tasks</string>
+    <string name="SubTaskTitle">Sub Task title</string>
+    <string name="AddSubTask">Add Sub Tasks</string>
 </resources>

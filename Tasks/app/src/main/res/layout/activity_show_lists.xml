@@ -16,16 +16,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8sp"
+            android:background="@color/colorSecondaryBg"
+            android:padding="12dp"
             android:orientation="horizontal">
 
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="2"
                 android:text="@string/Lists"
+                android:maxLines="1"
                 android:textAlignment="center"
                 android:textColor="@color/colorAccentSecondary"
                 android:textSize="24sp" />

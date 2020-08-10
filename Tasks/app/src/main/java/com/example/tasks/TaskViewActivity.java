@@ -7,12 +7,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Paint;
-import android.icu.text.MessagePattern;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +20,9 @@ import android.widget.Toast;
 import com.example.tasks.adapters.MoveTaskRecyclerAdapter;
 import com.example.tasks.dataStructure.Task;
 import com.example.tasks.interfaces.OnRecyclerItemClickListener;
+import com.example.tasks.interfaces.OnSubTaskItemClickListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class TaskViewActivity extends AppCompatActivity {
 
@@ -31,6 +30,8 @@ public class TaskViewActivity extends AppCompatActivity {
     private ImageButton changeStatusButton;
     private EditText taskTitleET;
     private EditText taskDetailET;
+
+    private RecyclerView subTasksRecyclerView;
 
     private Task task;
     private Manager manager;
@@ -58,6 +59,7 @@ public class TaskViewActivity extends AppCompatActivity {
 
         // Setting stuff up
         listTitleTV = (TextView) findViewById(R.id.list_title_tv_task_view);
+
         taskTitleET = (EditText) findViewById(R.id.task_title_edit_text);
         taskTitleET.addTextChangedListener(new TextWatcher() {
             @Override
@@ -124,6 +126,7 @@ public class TaskViewActivity extends AppCompatActivity {
                 changeStatus();
             }
         });
+
 
         // setting up view for the first time
         setView();
@@ -224,4 +227,6 @@ public class TaskViewActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
     }
+
+
 }

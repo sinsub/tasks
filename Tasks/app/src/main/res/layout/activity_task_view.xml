@@ -22,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
+            android:background="@color/colorSecondaryBg"
             android:orientation="horizontal">
 
 
@@ -63,12 +64,17 @@
                 android:inputType="textMultiLine"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_margin="16dp"
                 android:background="@null"
                 android:ems="10"
                 android:hint="@string/TaskTitle"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display3"
                 android:textSize="20sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorSecondaryBg" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -82,6 +88,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="12"
                     android:layout_marginTop="2dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_baseline_notes_24" />
 
                 <EditText
@@ -89,7 +97,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginEnd="12dp"
                     android:layout_weight="1"
                     android:background="@null"
                     android:ems="10"
@@ -98,9 +105,18 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                     android:textSize="16sp" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorSecondaryBg" />
+
+
+
         </LinearLayout>
 
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="0dp"

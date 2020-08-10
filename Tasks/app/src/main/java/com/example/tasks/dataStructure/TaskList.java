@@ -20,33 +20,12 @@ public class TaskList implements Serializable {
         taskComparator = Task.MY_ORDER;
     }
 
-    public TaskList getCopy() {
-        TaskList taskList = new TaskList(title);
-        for (Task task : incompleteTasks) {
-            taskList.addTask(task);
-        }
-        for (Task task : completeTasks) {
-            taskList.addCompleteTask(task);
-        }
-        taskList.setTaskComparator(taskComparator);
-        return taskList;
-    }
-
-
     // adding new Tasks
     public void addTask(Task task) {
         if (!task.isComplete()) incompleteTasks.add(task);
         else completeTasks.add(task);
         sort();
     }
-
-    public void addCompleteTask(Task task) {
-        if (!task.isComplete())
-            throw new IllegalArgumentException("Task passes to addCompleteTask() is incomplete, " +
-                    "it must me complete!");
-        completeTasks.add(task);
-    }
-
 
     // deleting Tasks
     public void deleteTask(Task task) {
@@ -67,10 +46,9 @@ public class TaskList implements Serializable {
         incompleteTasks.remove(index);
     }
 
+    // delete all completed tasks
     public void deleteCompletedTasks() {
-        while (completeTasks.size() > 0) {
-            completeTasks.remove(completeTasks.size() - 1);
-        }
+        completeTasks.clear();
     }
 
 

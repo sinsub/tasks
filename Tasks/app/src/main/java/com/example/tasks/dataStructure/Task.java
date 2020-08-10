@@ -16,8 +16,9 @@ public class Task implements Serializable {
 
     private String title;                       // title of the task
     private String details;                     // details of the task
-    private boolean status;                     // true if status
-    private final ArrayList<SubTask> subTasks;     // list of subTasks
+    private boolean status;                     // true if complete
+    private final ArrayList<SubTask> incompleteSubTasks;     // list of subTasks
+    private final ArrayList<SubTask> completeSubTasks;
     private LocalDateTime dueTime;              // due time of the task
     private final long timeCreated;             // time when the task was created
 
@@ -27,13 +28,9 @@ public class Task implements Serializable {
         this.details = details;
         this.dueTime = dueTime;
         this.status = INCOMPLETE;                   // new task defaults to incomplete
-        this.subTasks = new ArrayList<>();
+        this.incompleteSubTasks = new ArrayList<>();
+        this.completeSubTasks = new ArrayList<>();
         timeCreated = System.currentTimeMillis();   // set to time of object creation
-    }
-
-    @Override
-    public String toString() {
-        return title;
     }
 
     /*************************************************
@@ -43,15 +40,12 @@ public class Task implements Serializable {
     public boolean isComplete() {
         return status == COMPLETE;
     }
+
     public boolean setComplete() {
         status = COMPLETE;
         boolean deepComplete = true;
-        for (SubTask st : subTasks) {
-            if (!st.isComplete()) {
-//                st.setComplete();
-                deepComplete = false;
-            }
-        }
+        if (incompleteSubTasks.size() > 0)
+            deepComplete = false;
         return deepComplete;
     }
     public void setIncomplete() {
@@ -88,37 +82,60 @@ public class Task implements Serializable {
      * functions related to SubTasks
      *************************************************/
 
+    // Add sub task
     public void addSubTask(SubTask subTask) {
-        if (subTasks == null)
-            throw new IllegalArgumentException("Argument to addSubTask() is null!");
-        subTasks.add(subTask);
-    }
-
-    public void deleteSubTask(SubTask subTask) {
         if (subTask == null)
-            throw new IllegalArgumentException("Argument to deleteSubTask() is null!");
-        subTasks.remove(subTask);
+            throw new IllegalArgumentException("Argument to addSubTask() is null!");
+        if (subTask.isComplete()) completeSubTasks.add(subTask);
+        else incompleteSubTasks.add(subTask);
     }
 
-    public void deleteSubTask(int index) {
-        if (index < 0 || index >= subTasks.size())
-            throw new IllegalArgumentException("Index "+index+" to deleteSubTask is out of range for size "+subTasks.size()+"!");
-        subTasks.remove(index);
+    // delete sub task
+    public void deleteSubTask(SubTask subTask) {
+        if (subTask.isComplete()) completeSubTasks.remove(subTask);
+        else incompleteSubTasks.remove(subTask);
+    }
+    public void deleteIncompleteSubTask(int index) {
+        if (index < 0 || index >= incompleteSubTasks.size())
+            throw new IllegalArgumentException("Index "+index+" to deleteSubTask is out of range for size "+incompleteSubTasks.size()+"!");
+        incompleteSubTasks.remove(index);
+    }
+    public void deleteCompleteSubTask(int index) {
+        if (index < 0 || index >= completeSubTasks.size())
+            throw new IllegalArgumentException("Index "+index+" to deleteSubTask is out of range for size "+completeSubTasks.size()+"!");
+        completeSubTasks.remove(index);
     }
 
-    public void deleteCompletedSubTasks() {
-        while (true) {
-            int index = -1;
-            for (int i = 0 ; i < subTasks.size(); i++) {
-                if (subTasks.get(i).isComplete()) {
-                    index = i;
-                    break;
-                }
-            }
-            if (index == -1)
-                return;
-            deleteSubTask(index);
-        }
+    // get the sub task at index
+    public SubTask getIncompleteSubTaskAt(int index) {
+        if (index < 0 || index > incompleteSubTasks.size()) throw new IllegalArgumentException("Index wrong!");
+        return incompleteSubTasks.get(index);
+    }
+    public SubTask getCompleteSubTaskAt(int index) {
+        if (index < 0 || index > completeSubTasks.size()) throw new IllegalArgumentException("Index wrong!");
+        return completeSubTasks.get(index);
+    }
+
+    // get sub tasks count
+    public int getIncompleteSubTasksCount() {
+        return incompleteSubTasks.size();
+    }
+    public int getCompleteSubTasksCount() {
+        return completeSubTasks.size();
+    }
+
+    // complete the sub task at index i
+    public void completeSubTaskAt(int index) {
+        if (index < 0 || index >= incompleteSubTasks.size()) throw new IllegalArgumentException("Index out of bounds");
+        SubTask subTask = incompleteSubTasks.get(index);
+        incompleteSubTasks.remove(index);
+        subTask.setComplete();
+        completeSubTasks.add(subTask);
+    }
+
+    // change the title of incomplete task
+    public void changeIncompleteSubTaskTitle(int index, String title) {
+        incompleteSubTasks.get(index).setTitle(title);
     }
 
     /***************************************************

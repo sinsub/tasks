@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorSecondaryBg"
+    android:background="@color/colorPrimaryBg"
     android:layout_margin="16dp"
     android:orientation="vertical">
 
@@ -14,6 +14,11 @@
         android:text="@string/MoveTaskTo"
         android:textColor="@color/colorAccentSecondary"
         android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorSecondaryBg" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/move_task_to_recycler_view"
