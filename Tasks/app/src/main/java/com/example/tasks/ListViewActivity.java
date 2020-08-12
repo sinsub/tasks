@@ -155,7 +155,6 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
                     manager.addTask(name, detail, null);
                     alertDialog.dismiss();
                     makeToast("Task added");
-
                     myAdapterI.notifyDataSetChanged();
                 }
             }

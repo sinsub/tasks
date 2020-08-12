@@ -220,6 +220,20 @@ public class Manager {
         write();
     }
 
+    public void changeCompleteSubTaskTitle(Task task, int index, String title) {
+        task.changeCompleteSubTaskTitle(index, title);
+        write();
+    }
+
+    public void deleteCompleteSubTask(Task task, int index) {
+        task.deleteCompleteSubTask(index);
+        write();
+    }
+
+    public void incompleteSubTaskOf(Task task, int index) {
+        task.incompleteSubTaskAt(index);
+        write();
+    }
     /*********************************************
      *  functions relating all Lists
      *********************************************/

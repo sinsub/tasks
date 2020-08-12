@@ -12,6 +12,7 @@
 
     <!-- My Strings -->
     <string name="Save">Save</string>
+    <string name="Add">Add</string>
     <string name="Delete">Delete</string>
     <string name="Cancel">Cancel</string>
     <string name="Lists">Lists</string>
@@ -32,6 +33,10 @@
     <string name="Dark">Dark</string>
     <string name="Light">Light</string>
     <string name="SubTasks">Sub Tasks</string>
+    <string name="SubTask">Sub Task</string>
     <string name="SubTaskTitle">Sub Task title</string>
     <string name="AddSubTask">Add Sub Tasks</string>
+    <string name="Complete">Complete</string>
+    <string name="AddNewSubTask">Add new Sub Task</string>
+    <string name="ChangeSubTaskTitle">Change Sub Task Title</string>
 </resources>

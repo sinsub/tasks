@@ -90,6 +90,7 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
 
         final EditText taskListTitleET = (EditText) mView.findViewById(R.id.new_task_list_title_ET);
         Button addNewListButton = (Button) mView.findViewById(R.id.add_new_list_button);
+        addNewListButton.setText(R.string.Add);
 
         alert.setView(mView);
 

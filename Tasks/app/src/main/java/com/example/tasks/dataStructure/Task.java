@@ -138,6 +138,19 @@ public class Task implements Serializable {
         incompleteSubTasks.get(index).setTitle(title);
     }
 
+    public void changeCompleteSubTaskTitle(int index, String title) {
+        completeSubTasks.get(index).setTitle(title);
+    }
+
+    public void incompleteSubTaskAt(int index) {
+        if (index < 0 || index >= completeSubTasks.size()) throw new IllegalArgumentException("Index out of bounds");
+        SubTask subTask = completeSubTasks.get(index);
+        completeSubTasks.remove(index);
+        subTask.setComplete();
+        incompleteSubTasks.add(subTask);
+    }
+
+
     /***************************************************
      *  Comparators
      ***************************************************/
