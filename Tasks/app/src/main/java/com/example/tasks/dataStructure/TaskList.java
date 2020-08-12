@@ -100,11 +100,11 @@ public class TaskList implements Serializable {
 
 
     public void swapIncompleteTask(int index1, int index2) {
-        if (index1 < 0 || index1 >= incompleteTasks.size())
-            throw new IllegalArgumentException("Index out of bounds!");
-        if (index2 < 0 || index2 >= incompleteTasks.size())
-            throw new IllegalArgumentException("Index out of bounds!");
         Collections.swap(incompleteTasks, index1, index2);
+    }
+
+    public void swapCompleteTask(int index1, int index2) {
+        Collections.swap(completeTasks, index1, index2);
     }
 
 

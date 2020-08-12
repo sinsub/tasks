@@ -26,7 +26,6 @@
         android:ems="10"
         android:hint="@string/SubTaskTitle"
         android:inputType="textPersonName"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
         android:textColor="@color/colorPrimaryText"
         android:textColorHint="@color/colorUnavailableText"
         android:textSize="16sp" />

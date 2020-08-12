@@ -1,16 +1,24 @@
 package com.example.tasks;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,6 +35,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.w3c.dom.Text;
+
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItemClickListener {
 
@@ -148,9 +158,13 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         // recycler views
         incompleteSubTasksRecyclerView = (RecyclerView) findViewById(R.id.sub_tasks_incomplete_recycler_view);
         incompleteSubTasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ItemTouchHelper itemTouchHelperI = new ItemTouchHelper(simpleCallbackI);
+        itemTouchHelperI.attachToRecyclerView(incompleteSubTasksRecyclerView);
 
         completeSubTaskRecyclerView = (RecyclerView) findViewById(R.id.sub_tasks_complete_recycler_view);
         completeSubTaskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ItemTouchHelper itemTouchHelperC = new ItemTouchHelper(simpleCallbackC);
+        itemTouchHelperC.attachToRecyclerView(completeSubTaskRecyclerView);
 
 
         // setting up view for the first time
@@ -160,7 +174,7 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
     private void setView() {
         listTitleTV.setText(manager.getListTitle());
         if (task.isComplete()) {
-            changeStatusButton.setImageResource(R.drawable.ic_baseline_check_box_outline_blank_24_accent);
+            changeStatusButton.setImageResource(R.drawable.ic_baseline_radio_button_unchecked_24);
             taskTitleET.setPaintFlags(taskTitleET.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             changeStatusButton.setImageResource(R.drawable.ic_baseline_check_24);
@@ -191,6 +205,19 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
 
+        taskTitleET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                taskTitleET.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager inputMethodManager= (InputMethodManager) TaskViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(taskTitleET, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
+            }
+        });
+
         addNewTasButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,12 +234,11 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
             }
         });
         alertDialog.show();
+
+        taskTitleET.requestFocus();
     }
 
     private void changeStatus() {
-        if (!task.isComplete()) {
-            changeStatusButton.setImageResource(R.drawable.ic_baseline_plus_one_24_respect);
-        }
         manager.changeStatusOfTask(task);
         if (task.isComplete()) {
             makeToast("Marked task as complete");
@@ -305,19 +331,20 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
     public void onDeleteButtonClick(int position , boolean complete) {
         if (complete) deleteCompleteSubTask(position);
         else deleteIncompleteSubTask(position);
-        makeToast("One sub task deleted");
     }
 
     private void deleteCompleteSubTask(int position) {
         manager.deleteCompleteSubTask(task, position);
         recyclerAdapterCST.notifyItemRemoved(position);
         recyclerAdapterCST.notifyItemRangeChanged(position, recyclerAdapterCST.getItemCount());
+        makeToast("One sub task deleted");
     }
 
     private void deleteIncompleteSubTask(int position) {
         manager.deleteIncompleteSubTask(task, position);
         recyclerAdapterIST.notifyItemRemoved(position);
         recyclerAdapterIST.notifyItemRangeChanged(position, recyclerAdapterIST.getItemCount());
+        makeToast("One sub task deleted");
     }
 
     @Override
@@ -342,6 +369,19 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
 
+        taskTitleET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                taskTitleET.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager inputMethodManager= (InputMethodManager) TaskViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(taskTitleET, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
+            }
+        });
+
         addNewTasButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -359,7 +399,10 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
                 }
             }
         });
+
         alertDialog.show();
+
+        taskTitleET.requestFocus();
     }
 
     @Override
@@ -383,5 +426,111 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
     }
 
 
+    ItemTouchHelper.SimpleCallback simpleCallbackI = new ItemTouchHelper.SimpleCallback((ItemTouchHelper.UP | ItemTouchHelper.DOWN), ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            // getting positions
+            int fromPosition = viewHolder.getAdapterPosition();
+            int toPosition = target.getAdapterPosition();
+
+            // swapping in database
+            manager.swapIncompleteSubTasks(task ,fromPosition, toPosition);
+
+            // notifying the adapter
+            recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
+            return true;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            switch (direction) {
+                case ItemTouchHelper.LEFT:
+                    deleteIncompleteSubTask(position);
+                    break;
+                case ItemTouchHelper.RIGHT:
+                    completeSubTask(position);
+                    break;
+            }
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    .addSwipeRightActionIcon(R.drawable.ic_baseline_done_24_accent)
+                    .addSwipeLeftActionIcon(R.drawable.ic_baseline_delete_24_accent)
+                    .addBackgroundColor(ContextCompat.getColor(TaskViewActivity.this, R.color.colorAccentPrimary))
+                    .create()
+                    .decorate();
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+
+        @Override
+        public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+            super.onSelectedChanged(viewHolder, actionState);
+            if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(TaskViewActivity.this, R.color.colorSecondaryBg));
+            }
+        }
+
+        @Override
+        public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            super.clearView(recyclerView, viewHolder);
+            viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(TaskViewActivity.this, R.color.colorPrimaryBg));
+        }
+    };
+
+    ItemTouchHelper.SimpleCallback simpleCallbackC = new ItemTouchHelper.SimpleCallback((ItemTouchHelper.UP | ItemTouchHelper.DOWN), ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            // getting positions
+            int fromPosition = viewHolder.getAdapterPosition();
+            int toPosition = target.getAdapterPosition();
+            // swapping in database
+            manager.swapCompleteSubTasks(task ,fromPosition, toPosition);
+
+            // notifying the adapter
+            recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
+            return true;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            switch (direction) {
+                case ItemTouchHelper.LEFT:
+                    deleteCompleteSubTask(position);
+                    break;
+                case ItemTouchHelper.RIGHT:
+                    incompleteSubTask(position);
+                    break;
+            }
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    .addSwipeRightActionIcon(R.drawable.ic_baseline_radio_button_unchecked_24)
+                    .addSwipeLeftActionIcon(R.drawable.ic_baseline_delete_24_accent)
+                    .addBackgroundColor(ContextCompat.getColor(TaskViewActivity.this, R.color.colorAccentPrimary))
+                    .create()
+                    .decorate();
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+
+        @Override
+        public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+            super.onSelectedChanged(viewHolder, actionState);
+            if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(TaskViewActivity.this, R.color.colorSecondaryBg));
+            }
+        }
+
+        @Override
+        public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            super.clearView(recyclerView, viewHolder);
+            viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(TaskViewActivity.this, R.color.colorPrimaryBg));
+        }
+    };
 
 }

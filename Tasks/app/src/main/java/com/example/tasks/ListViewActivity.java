@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -141,6 +143,19 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
 
+        taskTitleET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                taskTitleET.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager inputMethodManager= (InputMethodManager) ListViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(taskTitleET, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
+            }
+        });
+
         addNewTasButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,6 +175,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             }
         });
         alertDialog.show();
+        taskTitleET.requestFocus();
     }
 
     // delete an incomplete task on swipe
@@ -433,6 +449,9 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         final AlertDialog.Builder alert = new AlertDialog.Builder(ListViewActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.new_task_list_cd, null);
 
+        TextView header = (TextView) mView.findViewById(R.id.new_task_list_cd_header);
+        header.setText(R.string.RenameList);
+
         final EditText taskListTitleET = (EditText) mView.findViewById(R.id.new_task_list_title_ET);
         Button renameListButton = (Button) mView.findViewById(R.id.add_new_list_button);
 
@@ -442,6 +461,19 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         alertDialog.setCanceledOnTouchOutside(true);
 
         taskListTitleET.setText(manager.getListTitle());
+
+        taskListTitleET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                taskListTitleET.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager inputMethodManager= (InputMethodManager) ListViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(taskListTitleET, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
+            }
+        });
 
         renameListButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -459,6 +491,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             }
         });
         alertDialog.show();
+        taskListTitleET.requestFocus();
     }
 
     // delete list?
@@ -621,10 +654,19 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     };
 
     // for complete task(RecyclerViewComplete)
-    ItemTouchHelper.SimpleCallback simpleCallbackComplete = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.SimpleCallback simpleCallbackComplete = new ItemTouchHelper.SimpleCallback((ItemTouchHelper.UP | ItemTouchHelper.DOWN), ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            return false;
+            // getting positions
+            int fromPosition = viewHolder.getAdapterPosition();
+            int toPosition = target.getAdapterPosition();
+
+            // swapping in database
+            manager.swapCompleteTasks(fromPosition, toPosition);
+
+            // notifying the adapter
+            recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
+            return true;
         }
 
         @Override
@@ -642,12 +684,26 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         @Override
         public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                    .addSwipeRightActionIcon(R.drawable.ic_baseline_check_box_outline_blank_24_accent)
+                    .addSwipeRightActionIcon(R.drawable.ic_baseline_radio_button_unchecked_24)
                     .addSwipeLeftActionIcon(R.drawable.ic_baseline_delete_24_accent)
                     .addBackgroundColor(ContextCompat.getColor(ListViewActivity.this, R.color.colorAccentPrimary))
                     .create()
                     .decorate();
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+
+        @Override
+        public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+            super.onSelectedChanged(viewHolder, actionState);
+            if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(ListViewActivity.this, R.color.colorSecondaryBg));
+            }
+        }
+
+        @Override
+        public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            super.clearView(recyclerView, viewHolder);
+            viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(ListViewActivity.this, R.color.colorPrimaryBg));
         }
     };
 

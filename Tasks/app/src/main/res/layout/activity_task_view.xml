@@ -78,13 +78,12 @@
                         android:id="@+id/task_title_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="12dp"
+                        android:layout_margin="16dp"
                         android:background="@null"
                         android:ems="10"
                         android:hint="@string/TaskTitle"
                         android:textColorHint="@color/colorUnavailableText"
                         android:inputType="textMultiLine"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
                         android:textSize="20sp" />
 
                     <View
@@ -158,8 +157,8 @@
                         android:id="@+id/sub_tasks_incomplete_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginEnd="16dp">
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="8dp">
 
                     </androidx.recyclerview.widget.RecyclerView>
 
@@ -171,7 +170,6 @@
                         android:text="@string/AddSubTask"
                         android:textAllCaps="false"
                         android:textColor="@color/colorAccentSecondary"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
                         android:textAlignment="textStart"
                         android:layout_marginRight="40dp"
                         android:layout_marginLeft="40dp"
@@ -200,8 +198,8 @@
                         android:id="@+id/sub_tasks_complete_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginEnd="16dp">
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="8dp">
 
                     </androidx.recyclerview.widget.RecyclerView>
 

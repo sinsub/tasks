@@ -3,6 +3,7 @@ package com.example.tasks.dataStructure;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 
 public class Task implements Serializable {
@@ -150,6 +151,14 @@ public class Task implements Serializable {
         incompleteSubTasks.add(subTask);
     }
 
+    public void swapIncompleteSubTasks(int index1, int index2) {
+        Collections.swap(incompleteSubTasks, index1, index2);
+    }
+
+    public void swapCompleteSubTasks(int index1, int index2) {
+        Collections.swap(completeSubTasks, index1, index2);
+    }
+
 
     /***************************************************
      *  Comparators
@@ -193,7 +202,5 @@ public class Task implements Serializable {
             return 0;
         }
     }
-
-
 }
 

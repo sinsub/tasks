@@ -27,7 +27,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/SortBy"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display3"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp" />
 
@@ -59,7 +58,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/RenameList"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display3"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -82,7 +80,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/DeleteCompletedTasks"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display3"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -105,7 +102,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/DeleteList"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display3"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp" />
         </LinearLayout>

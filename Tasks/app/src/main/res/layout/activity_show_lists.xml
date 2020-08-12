@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingBottom="55dp"
         android:orientation="vertical">
 
 
@@ -51,14 +52,6 @@
                     android:layout_height="wrap_content">
 
                 </androidx.recyclerview.widget.RecyclerView>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:layout_margin="20dp"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorPrimaryBg"
-                    android:textStyle="bold" />
 
 
             </LinearLayout>

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -39,7 +40,6 @@ public class RecyclerAdapterIT extends RecyclerView.Adapter<RecyclerAdapterIT.Vi
         final Task t = taskList.getIncompleteTask(position);
         holder.taskTitleTV.setText(t.getTitle());
         holder.taskDetailsTV.setText(t.getDetails());
-        holder.taskCheckBox.setChecked(t.isComplete());
     }
 
     @Override
@@ -50,7 +50,7 @@ public class RecyclerAdapterIT extends RecyclerView.Adapter<RecyclerAdapterIT.Vi
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView taskTitleTV;
         public TextView taskDetailsTV;
-        public CheckBox taskCheckBox;
+        public ImageButton taskCompleteButton;
         public LinearLayout taskContainer;
 
         public ViewHolder(@NonNull View itemView) {
@@ -58,11 +58,11 @@ public class RecyclerAdapterIT extends RecyclerView.Adapter<RecyclerAdapterIT.Vi
 
             taskTitleTV = (TextView) itemView.findViewById(R.id.task_title_tv);
             taskDetailsTV = (TextView) itemView.findViewById(R.id.task_details_tv);
-            taskCheckBox = (CheckBox) itemView.findViewById(R.id.task_check_box);
-            taskContainer = (LinearLayout) itemView.findViewById(R.id.task_container_LL);
+            taskCompleteButton = (ImageButton) itemView.findViewById(R.id.task_item_complete_button);
+            taskContainer = (LinearLayout) itemView.findViewById(R.id.task_item_container);
 
             // CheckBox on click listener :
-            taskCheckBox.setOnClickListener(new View.OnClickListener() {
+            taskCompleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = ViewHolder.this.getAdapterPosition();

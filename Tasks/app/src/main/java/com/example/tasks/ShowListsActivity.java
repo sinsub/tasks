@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -97,6 +99,20 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
 
+        taskListTitleET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                taskListTitleET.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager inputMethodManager= (InputMethodManager) ShowListsActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(taskListTitleET, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
+            }
+        });
+
+
         addNewListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,6 +129,8 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
             }
         });
         alertDialog.show();
+
+        taskListTitleET.requestFocus();
     }
 
     private void showSettings() {

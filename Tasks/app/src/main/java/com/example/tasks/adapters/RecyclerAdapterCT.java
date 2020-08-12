@@ -6,14 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.example.tasks.ListViewActivity;
 import com.example.tasks.R;
 import com.example.tasks.dataStructure.Task;
 import com.example.tasks.dataStructure.TaskList;
@@ -42,7 +45,7 @@ public class RecyclerAdapterCT extends RecyclerView.Adapter<RecyclerAdapterCT.Vi
         final Task t = taskList.getCompletedTask(position);
         holder.taskTitleTV.setText(t.getTitle());
         holder.taskDetailsTV.setText(t.getDetails());
-        holder.taskCheckBox.setChecked(t.isComplete());
+        holder.taskIncompleteButton.setImageResource(R.drawable.ic_baseline_check_24);
 
         holder.taskTitleTV.setPaintFlags(holder.taskTitleTV.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
@@ -63,7 +66,7 @@ public class RecyclerAdapterCT extends RecyclerView.Adapter<RecyclerAdapterCT.Vi
 
         public TextView taskTitleTV;
         public TextView taskDetailsTV;
-        public CheckBox taskCheckBox;
+        public ImageButton taskIncompleteButton;
         public CardView taskHolderCV;
         public LinearLayout taskContainer;
 
@@ -72,10 +75,10 @@ public class RecyclerAdapterCT extends RecyclerView.Adapter<RecyclerAdapterCT.Vi
 
             taskTitleTV = (TextView) itemView.findViewById(R.id.task_title_tv);
             taskDetailsTV = (TextView) itemView.findViewById(R.id.task_details_tv);
-            taskCheckBox = (CheckBox) itemView.findViewById(R.id.task_check_box);
-            taskContainer = (LinearLayout) itemView.findViewById(R.id.task_container_LL);
+            taskIncompleteButton = (ImageButton) itemView.findViewById(R.id.task_item_complete_button);
+            taskContainer = (LinearLayout) itemView.findViewById(R.id.task_item_container);
 
-            taskCheckBox.setOnClickListener(new View.OnClickListener() {
+            taskIncompleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = ViewHolder.this.getAdapterPosition();

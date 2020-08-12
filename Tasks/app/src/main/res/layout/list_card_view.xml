@@ -32,7 +32,6 @@
                 android:layout_weight="1"
                 android:hint="@string/ListTitle"
                 android:textColorHint="@color/colorUnavailableText"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display3"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"

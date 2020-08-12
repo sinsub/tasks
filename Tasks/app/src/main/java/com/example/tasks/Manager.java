@@ -165,6 +165,12 @@ public class Manager {
         write();
     }
 
+    public void swapCompleteTasks(int index1, int index2) {
+        openList.swapCompleteTask(index1, index2);
+        write();
+    }
+
+
     public void moveTaskToList(Task task, int position) {
         if (task == null) throw new IllegalArgumentException("Task cannot be null!");
         if (position == getOpenListPosition()) return;
@@ -234,6 +240,17 @@ public class Manager {
         task.incompleteSubTaskAt(index);
         write();
     }
+
+    public void swapIncompleteSubTasks(Task task, int index1, int index2) {
+        task.swapIncompleteSubTasks(index1, index2);
+        write();
+    }
+
+    public void swapCompleteSubTasks(Task task, int index1, int index2) {
+        task.swapCompleteSubTasks(index1, index2);
+        write();
+    }
+
     /*********************************************
      *  functions relating all Lists
      *********************************************/

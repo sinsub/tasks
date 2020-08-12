@@ -46,7 +46,6 @@ public class RecyclerAdapterCST extends RecyclerView.Adapter<RecyclerAdapterCST.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         ImageButton completeButton;
         TextView subTaskTitleTV;
         ImageButton deleteButton;
