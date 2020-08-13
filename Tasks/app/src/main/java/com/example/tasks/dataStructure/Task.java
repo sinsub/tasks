@@ -1,5 +1,7 @@
 package com.example.tasks.dataStructure;
 
+import android.media.SubtitleData;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -101,10 +103,19 @@ public class Task implements Serializable {
             throw new IllegalArgumentException("Index "+index+" to deleteSubTask is out of range for size "+incompleteSubTasks.size()+"!");
         incompleteSubTasks.remove(index);
     }
+
+    public void undoDeleteIncompleteSubTask(SubTask subTask, int index) {
+        incompleteSubTasks.add(index, subTask);
+    }
+
     public void deleteCompleteSubTask(int index) {
         if (index < 0 || index >= completeSubTasks.size())
             throw new IllegalArgumentException("Index "+index+" to deleteSubTask is out of range for size "+completeSubTasks.size()+"!");
         completeSubTasks.remove(index);
+    }
+
+    public void undoDeleteCompleteSubTask(SubTask subTask, int index) {
+        completeSubTasks.add(index, subTask);
     }
 
     // get the sub task at index
@@ -134,6 +145,12 @@ public class Task implements Serializable {
         completeSubTasks.add(subTask);
     }
 
+    public void undoCompleteSubTask(SubTask subTask, int index) {
+        completeSubTasks.remove(subTask);
+        subTask.setComplete();
+        incompleteSubTasks.add(index, subTask);
+    }
+
     // change the title of incomplete task
     public void changeIncompleteSubTaskTitle(int index, String title) {
         incompleteSubTasks.get(index).setTitle(title);
@@ -149,6 +166,12 @@ public class Task implements Serializable {
         completeSubTasks.remove(index);
         subTask.setComplete();
         incompleteSubTasks.add(subTask);
+    }
+
+    public void undoIncompleteSubTask(SubTask subTask, int index) {
+        incompleteSubTasks.remove(subTask);
+        subTask.setComplete();
+        completeSubTasks.add(index, subTask);
     }
 
     public void swapIncompleteSubTasks(int index1, int index2) {

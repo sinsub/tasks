@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -25,13 +26,17 @@ import android.widget.Toast;
 
 import com.example.tasks.adapters.RecyclerAdapterCT;
 import com.example.tasks.adapters.RecyclerAdapterIT;
+import com.example.tasks.dataStructure.SubTask;
+import com.example.tasks.dataStructure.Task;
+import com.example.tasks.interfaces.OnSubTaskItemClickListener;
 import com.example.tasks.interfaces.TaskCardViewListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
-public class ListViewActivity extends AppCompatActivity implements TaskCardViewListener {
+public class ListViewActivity extends AppCompatActivity implements TaskCardViewListener{
 
     private Manager manager;                // manager object
     private TextView listTitleTextView;     // title of the list!
@@ -44,6 +49,8 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     private RecyclerView recyclerViewC;     // for complete tasks
     private RecyclerAdapterCT myAdapterC;
     private AlertDialog alertDialog;
+
+    FloatingActionButton addTaskFAB;
 
 
     @Override
@@ -99,7 +106,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         itemTouchHelperComplete.attachToRecyclerView(recyclerViewC);
 
         // Floating button to add new task
-        FloatingActionButton addTaskFAB = (FloatingActionButton) findViewById(R.id.add_task_fab);
+        addTaskFAB = (FloatingActionButton) findViewById(R.id.add_task_fab);
         addTaskFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,7 +125,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         listTitleTextView.setText(manager.getListTitle());
 
         // for incomplete tasks
-        myAdapterI = new RecyclerAdapterIT(manager.getOpenList(), this);
+        myAdapterI = new RecyclerAdapterIT(manager.getOpenList(), this, this, manager, addTaskFAB);
         recyclerViewI.setAdapter(myAdapterI);
 
         // for complete tasks
@@ -169,7 +176,9 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
                 } else {
                     manager.addTask(name, detail, null);
                     alertDialog.dismiss();
-                    makeToast("Task added");
+                    Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.NewTaskAdded, Snackbar.LENGTH_LONG);
+                    snackbar.setAnchorView(addTaskFAB);
+                    snackbar.show();
                     myAdapterI.notifyDataSetChanged();
                 }
             }
@@ -200,7 +209,9 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             @Override
             public void onClick(View v) {
                 manager.deleteIncompleteTask(position);
-                makeToast("One Task deleted");
+                Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.OneITDeleted, Snackbar.LENGTH_LONG);
+                snackbar.setAnchorView(addTaskFAB);
+                snackbar.show();
                 myAdapterI.notifyItemRemoved(position);
                 myAdapterI.notifyItemRangeChanged(position, myAdapterI.getItemCount());
                 alertDialog.cancel();
@@ -239,7 +250,9 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             @Override
             public void onClick(View v) {
                 manager.deleteCompleteTask(position);
-                makeToast("One Task deleted");
+                Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.OneCTDeleted, Snackbar.LENGTH_LONG);
+                snackbar.setAnchorView(addTaskFAB);
+                snackbar.show();
                 myAdapterC.notifyItemRemoved(position);
                 myAdapterC.notifyItemRangeChanged(position, myAdapterC.getItemCount());
                 alertDialog.cancel();
@@ -278,7 +291,9 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             @Override
             public void onClick(View v) {
                 manager.deleteCompletedTasks();
-                makeToast("All complete Tasks from this list deleted");
+                Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.AllCTDeleted, Snackbar.LENGTH_LONG);
+                snackbar.setAnchorView(addTaskFAB);
+                snackbar.show();
                 myAdapterC.notifyDataSetChanged();
                 alertDialog.cancel();
             }
@@ -295,33 +310,56 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     }
 
 
-
-
     // Implemented methods of TaskCardViewListener!
 
     // Complete an incomplete task on checkbox click or swipe
     @Override
-    public void completeTask(int position) {
+    public void completeTask(final int position) {
+        final Task task = manager.getOpenList().getIncompleteTask(position);
         boolean deepComplete = manager.setTaskComplete(position);
-        makeToast("One Task marked as complete");
+        String mssg = "Task Marked Complete";
         if (!deepComplete) {
-            makeToast("Some sub-tasks were incomplete");
+           mssg = mssg + "\nSome sub-tasks were incomplete.";
         }
         myAdapterI.notifyItemRemoved(position);
-        myAdapterI.notifyItemRangeChanged(position, myAdapterI.getItemCount());
-
         myAdapterC.notifyDataSetChanged();
+
+        Snackbar snackbar = Snackbar.make(recyclerViewI, mssg, Snackbar.LENGTH_LONG);
+        snackbar.setAnchorView(addTaskFAB);
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
+        snackbar.setAction(R.string.Undo, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manager.undoSetTaskComplete(task ,position);
+                myAdapterI.notifyItemInserted(position);
+                myAdapterC.notifyDataSetChanged();
+            }
+        });
+        snackbar.show();
+
     }
 
     // Incomplete a completed task on checkbox click or swipe
     @Override
-    public void incompleteTask(int position) {
+    public void incompleteTask(final int position) {
+        final Task task = manager.getOpenList().getCompletedTask(position);
         manager.setTaskIncomplete(position);
-        makeToast("One Task marked as incomplete");
         myAdapterC.notifyItemRemoved(position);
-        myAdapterC.notifyItemRangeChanged(position, myAdapterC.getItemCount());
-
         myAdapterI.notifyDataSetChanged();
+
+        Snackbar snackbar = Snackbar.make(recyclerViewC, R.string.TaskMarkedAsIncomplete, Snackbar.LENGTH_LONG);
+        snackbar.setAnchorView(addTaskFAB);
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
+        snackbar.setAction(R.string.Undo, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manager.undoSetTaskIncomplete(task ,position);
+                myAdapterC.notifyItemInserted(position);
+                myAdapterI.notifyDataSetChanged();
+            }
+        });
+        snackbar.show();
+
     }
 
     // To add the "Completed" text view only when there are completed items
@@ -334,6 +372,13 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     public void onTaskContainerClick(int position, boolean complete) {
         startTaskActivity(position, complete);
     }
+
+    @Override
+    public void onSubTaskItemClick(int taskPosition, int subTaskPosition, boolean complete) {
+        // for incomplete sub task
+        startTaskActivity(taskPosition, complete);
+    }
+
 
 
     // function related to UI
@@ -711,4 +756,5 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     public void makeToast(String str) {
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
+
 }

@@ -21,18 +21,22 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tasks.adapters.MoveTaskRecyclerAdapter;
 import com.example.tasks.adapters.RecyclerAdapterCST;
 import com.example.tasks.adapters.RecyclerAdapterIST;
+import com.example.tasks.dataStructure.SubTask;
 import com.example.tasks.dataStructure.Task;
 import com.example.tasks.interfaces.OnRecyclerItemClickListener;
 import com.example.tasks.interfaces.OnSubTaskItemClickListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.w3c.dom.Text;
 
@@ -95,6 +99,7 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
                 manager.changeTaskTitle(task, taskTitleET.getText().toString());
             }
         });
+
         taskDetailET = (EditText) findViewById(R.id.task_details_edit_text);
         taskDetailET.addTextChangedListener(new TextWatcher() {
             @Override
@@ -211,7 +216,7 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
                 taskTitleET.post(new Runnable() {
                     @Override
                     public void run() {
-                        InputMethodManager inputMethodManager= (InputMethodManager) TaskViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager inputMethodManager = (InputMethodManager) TaskViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputMethodManager.showSoftInput(taskTitleET, InputMethodManager.SHOW_IMPLICIT);
                     }
                 });
@@ -241,9 +246,13 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
     private void changeStatus() {
         manager.changeStatusOfTask(task);
         if (task.isComplete()) {
-            makeToast("Marked task as complete");
+            Snackbar snackbar = Snackbar.make(incompleteSubTasksRecyclerView, "Task marked as complete", Snackbar.LENGTH_LONG);
+            snackbar.setAnchorView(findViewById(R.id.task_view_bottom_bar));
+            snackbar.show();
         } else {
-            makeToast("Marked task as incomplete");
+            Snackbar snackbar = Snackbar.make(incompleteSubTasksRecyclerView, "Task marked as incomplete", Snackbar.LENGTH_LONG);
+            snackbar.setAnchorView(findViewById(R.id.task_view_bottom_bar));
+            snackbar.show();
         }
         setView();
     }
@@ -311,44 +320,86 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         // notify item removed!
     }
 
-    private void incompleteSubTask(int position) {
-        manager.incompleteSubTaskOf(task, position);
+    private void incompleteSubTask(final int position) {
+        final SubTask subTask = manager.incompleteSubTaskOf(task, position);
         recyclerAdapterCST.notifyItemRemoved(position);
-        recyclerAdapterCST.notifyItemRangeChanged(position, recyclerAdapterCST.getItemCount());
         recyclerAdapterIST.notifyDataSetChanged();
-        makeToast("One sub task marked as incomplete");
+        Snackbar snackbar = Snackbar.make(completeSubTaskRecyclerView, R.string.SubTaskMarkedAsIncomplete, Snackbar.LENGTH_LONG);
+        snackbar.setAnchorView(findViewById(R.id.task_view_bottom_bar));
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
+        snackbar.setAction(R.string.Undo, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manager.undoIncompleteSubTaskOf(task, subTask, position);
+                recyclerAdapterCST.notifyItemInserted(position);
+                recyclerAdapterIST.notifyDataSetChanged();
+            }
+        });
+        snackbar.show();
     }
 
-    private void completeSubTask(int position) {
-        manager.completeSubTaskOf(task, position);
+    private void completeSubTask(final int position) {
+        final SubTask subTask = manager.completeSubTaskOf(task, position);
         recyclerAdapterIST.notifyItemRemoved(position);
-        recyclerAdapterIST.notifyItemRangeChanged(position, recyclerAdapterIST.getItemCount());
         recyclerAdapterCST.notifyDataSetChanged();
-        makeToast("One sub task marked as complete");
+        Snackbar snackbar = Snackbar.make(incompleteSubTasksRecyclerView, R.string.SubTaskMarkedAsComplete, Snackbar.LENGTH_LONG);
+        snackbar.setAnchorView(findViewById(R.id.task_view_bottom_bar));
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
+        snackbar.setAction(R.string.Undo, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manager.undoCompleteSubTaskOf(task, subTask, position);
+                recyclerAdapterIST.notifyItemInserted(position);
+                recyclerAdapterCST.notifyDataSetChanged();
+            }
+        });
+        snackbar.show();
     }
 
     @Override
-    public void onDeleteButtonClick(int position , boolean complete) {
+    public void onDeleteButtonClick(int position, boolean complete) {
         if (complete) deleteCompleteSubTask(position);
         else deleteIncompleteSubTask(position);
     }
 
-    private void deleteCompleteSubTask(int position) {
+    private void deleteCompleteSubTask(final int position) {
+        final SubTask subTask = task.getCompleteSubTaskAt(position);
         manager.deleteCompleteSubTask(task, position);
         recyclerAdapterCST.notifyItemRemoved(position);
-        recyclerAdapterCST.notifyItemRangeChanged(position, recyclerAdapterCST.getItemCount());
-        makeToast("One sub task deleted");
+
+        Snackbar snackbar = Snackbar.make(completeSubTaskRecyclerView, R.string.SubTaskDeleted, Snackbar.LENGTH_LONG);
+        snackbar.setAnchorView(findViewById(R.id.task_view_bottom_bar));
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
+        snackbar.setAction(R.string.Undo, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manager.undoDeleteCompleteSubTask(task, subTask, position);
+                recyclerAdapterCST.notifyItemInserted(position);
+            }
+        });
+        snackbar.show();
     }
 
-    private void deleteIncompleteSubTask(int position) {
+    private void deleteIncompleteSubTask(final int position) {
+        final SubTask subTask = task.getIncompleteSubTaskAt(position);
         manager.deleteIncompleteSubTask(task, position);
         recyclerAdapterIST.notifyItemRemoved(position);
-        recyclerAdapterIST.notifyItemRangeChanged(position, recyclerAdapterIST.getItemCount());
-        makeToast("One sub task deleted");
+
+        Snackbar snackbar = Snackbar.make(incompleteSubTasksRecyclerView, R.string.SubTaskDeleted, Snackbar.LENGTH_LONG);
+        snackbar.setAnchorView(findViewById(R.id.task_view_bottom_bar));
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
+        snackbar.setAction(R.string.Undo, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manager.undoDeleteIncompleteSubTask(task, subTask, position);
+                recyclerAdapterIST.notifyItemInserted(position);
+            }
+        });
+        snackbar.show();
     }
 
     @Override
-    public void onItemClick(int position , boolean complete)  {
+    public void onItemClick(int position, boolean complete) {
         showSubTaskTitleChangeDialog(position, complete);
         // notify data changed!
     }
@@ -375,7 +426,7 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
                 taskTitleET.post(new Runnable() {
                     @Override
                     public void run() {
-                        InputMethodManager inputMethodManager= (InputMethodManager) TaskViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager inputMethodManager = (InputMethodManager) TaskViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputMethodManager.showSoftInput(taskTitleET, InputMethodManager.SHOW_IMPLICIT);
                     }
                 });
@@ -434,7 +485,7 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
             int toPosition = target.getAdapterPosition();
 
             // swapping in database
-            manager.swapIncompleteSubTasks(task ,fromPosition, toPosition);
+            manager.swapIncompleteSubTasks(task, fromPosition, toPosition);
 
             // notifying the adapter
             recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
@@ -487,7 +538,7 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
             int fromPosition = viewHolder.getAdapterPosition();
             int toPosition = target.getAdapterPosition();
             // swapping in database
-            manager.swapCompleteSubTasks(task ,fromPosition, toPosition);
+            manager.swapCompleteSubTasks(task, fromPosition, toPosition);
 
             // notifying the adapter
             recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);

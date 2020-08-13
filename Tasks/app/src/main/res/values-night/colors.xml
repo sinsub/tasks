@@ -9,5 +9,5 @@
     <color name="colorSecondaryText">#D8C0C0</color>
     <color name="colorPrimaryBg">#141923</color>
     <color name="colorSecondaryBg">#282828</color>
-    <color name="colorUnavailableText">#505050</color>
+    <color name="colorUnavailableText">#646464</color>
 </resources>

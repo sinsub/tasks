@@ -77,6 +77,13 @@ public class TaskList implements Serializable {
         sort();
     }
 
+    public void undoSetTaskIncomplete(Task task, int index) {
+        if (task.isComplete()) throw new IllegalArgumentException("Task is complete!!!");
+        incompleteTasks.remove(task);
+        task.setComplete();
+        completeTasks.add(index, task);
+    }
+
     // Just changes the list they belong too ---> CHANGE THIS!!!!
     public boolean setTasksComplete(int index) {
         if (index < 0 || index >= incompleteTasks.size())
@@ -86,6 +93,13 @@ public class TaskList implements Serializable {
         boolean ret = t.setComplete();
         completeTasks.add(t);
         return ret;
+    }
+
+    public void undoSetTaskComplete(Task task, int index) {
+        if (!task.isComplete()) throw new IllegalArgumentException("Task is incomplete!!!");
+        completeTasks.remove(task);
+        task.setIncomplete();
+        incompleteTasks.add(index, task);
     }
 
 

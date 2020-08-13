@@ -21,19 +21,20 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="16dp"
+            android:padding="16dp"
             android:layout_weight="1"
             android:background="@null">
 
             <TextView
                 android:id="@+id/task_list_title_tv"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/ListTitle"
-                android:textColorHint="@color/colorUnavailableText"
                 android:textColor="@color/colorPrimaryText"
+                android:textColorHint="@color/colorUnavailableText"
                 android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/task_list_tasks_due"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

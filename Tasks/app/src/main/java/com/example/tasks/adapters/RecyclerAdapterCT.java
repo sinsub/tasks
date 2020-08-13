@@ -44,7 +44,7 @@ public class RecyclerAdapterCT extends RecyclerView.Adapter<RecyclerAdapterCT.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Task t = taskList.getCompletedTask(position);
         holder.taskTitleTV.setText(t.getTitle());
-        holder.taskDetailsTV.setText(t.getDetails());
+        holder.taskDetailsTV.setVisibility(View.GONE);
         holder.taskIncompleteButton.setImageResource(R.drawable.ic_baseline_check_24);
 
         holder.taskTitleTV.setPaintFlags(holder.taskTitleTV.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);

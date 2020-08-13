@@ -146,10 +146,20 @@ public class Manager {
         write();
     }
 
+    public void undoSetTaskIncomplete(Task task, int index) {
+        openList.undoSetTaskIncomplete(task, index);
+        write();
+    }
+
     public boolean setTaskComplete(int index) {
         boolean ret = openList.setTasksComplete(index);
         write();
         return ret;
+    }
+
+    public void undoSetTaskComplete(Task task, int index) {
+        openList.undoSetTaskComplete(task, index);
+        write();
     }
 
     public String getIncompleteTaskTitle(int index) {
@@ -211,13 +221,20 @@ public class Manager {
         write();
     }
 
-    public void completeSubTaskOf(Task task, int index) {
+    public SubTask completeSubTaskOf(Task task, int index) {
+        SubTask subTask = task.getIncompleteSubTaskAt(index);
         task.completeSubTaskAt(index);
         write();
+        return subTask;
     }
 
     public void deleteIncompleteSubTask(Task task, int index) {
         task.deleteIncompleteSubTask(index);
+        write();
+    }
+
+    public void undoDeleteIncompleteSubTask(Task task, SubTask subTask,int index) {
+        task.undoDeleteIncompleteSubTask(subTask, index);
         write();
     }
 
@@ -236,8 +253,25 @@ public class Manager {
         write();
     }
 
-    public void incompleteSubTaskOf(Task task, int index) {
+    public void undoDeleteCompleteSubTask(Task task, SubTask subTask,int index) {
+        task.undoDeleteCompleteSubTask(subTask, index);
+        write();
+    }
+
+    public SubTask incompleteSubTaskOf(Task task, int index) {
+        SubTask subTask = task.getCompleteSubTaskAt(index);
         task.incompleteSubTaskAt(index);
+        write();
+        return subTask;
+    }
+
+    public void undoIncompleteSubTaskOf(Task task, SubTask subTask, int position) {
+        task.undoIncompleteSubTask(subTask, position);
+        write();
+    }
+
+    public void undoCompleteSubTaskOf(Task task, SubTask subTask, int position) {
+        task.undoCompleteSubTask(subTask, position);
         write();
     }
 

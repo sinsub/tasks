@@ -15,7 +15,11 @@
     <string name="Add">Add</string>
     <string name="Delete">Delete</string>
     <string name="Cancel">Cancel</string>
+    <string name="Undo">Undo</string>
     <string name="AddNewTask">Add new Task</string>
+    <string name="NewTaskAdded">New Task Added</string>
+    <string name="NewSubTaskAdded">New Sub Task Added</string>
+    <string name="NewListAdded">New Task Added</string>
     <string name="AddNewList">Add new List</string>
     <string name="Lists">Lists</string>
     <string name="NewListHint">Title of list</string>
@@ -41,4 +45,14 @@
     <string name="Complete">Complete</string>
     <string name="AddNewSubTask">Add new Sub Task</string>
     <string name="ChangeSubTaskTitle">Change Sub Task Title</string>
+    <string name="SubTaskMarkedAsIncomplete">Sub Task marked as incomplete</string>
+    <string name="SubTaskMarkedAsComplete">Sub Task marked as complete</string>
+    <string name="TaskMarkedAsIncomplete">Task marked as incomplete</string>
+    <string name="TaskMarkedAsComplete">Task marked as complete</string>
+    <string name="SubTaskDeleted">Sub Task deleted</string>
+    <string name="TaskDeleted">Task deleted</string>
+    <string name="OneITDeleted">One incomplete Task deleted</string>
+    <string name="OneCTDeleted">One complete Task deleted</string>
+    <string name="AllCTDeleted">All completed Tasks of this list deleted</string>
+    <string name="OneListDeleted">One List deleted</string>
 </resources>

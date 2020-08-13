@@ -6,17 +6,6 @@
     android:background="@color/colorSecondaryBg"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/new_task_cd_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:textSize="18sp"
-        android:text="@string/AddNewTask"
-        android:textColor="@color/colorAccentSecondary"/>
-
     <EditText
         android:id="@+id/new_task_title"
         android:layout_width="match_parent"

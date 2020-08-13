@@ -8,6 +8,7 @@
     tools:context=".TaskViewActivity">
 
     <LinearLayout
+        android:id="@+id/task_view_overall_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="55dp"
@@ -18,42 +19,42 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <!-- Top Bar Start -->
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorSecondaryBg"
-            android:orientation="horizontal"
             android:padding="12dp">
-
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/list_title_tv_task_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="10"
                 android:hint="@string/ListTitle"
-                android:textColorHint="@color/colorUnavailableText"
                 android:maxLines="1"
                 android:textAlignment="center"
                 android:textColor="@color/colorAccentSecondary"
-                android:textSize="24sp" />
+                android:textColorHint="@color/colorUnavailableText"
+                android:textSize="24sp"
+                android:layout_marginEnd="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/edit_list_button_task_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/edit_list_button_task_view"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
                 android:background="@null"
+                android:scaleType="fitCenter"
+                android:padding="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_edit_24" />
 
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- Top Bar End -->
 
 
@@ -216,6 +217,7 @@
     <!-- Bottom Tray -->
 
     <LinearLayout
+        android:id="@+id/task_view_bottom_bar"
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:background="@color/colorAccentPrimary"
