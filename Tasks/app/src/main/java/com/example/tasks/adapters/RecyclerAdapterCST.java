@@ -61,26 +61,11 @@ public class RecyclerAdapterCST extends RecyclerView.Adapter<RecyclerAdapterCST.
 
             completeButton.setImageResource(R.drawable.ic_baseline_check_24);
 
-            subTaskTitleTV.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(getAdapterPosition(), true);
-                }
-            });
+            subTaskTitleTV.setOnClickListener(v -> listener.onItemClick(getAdapterPosition(), true));
 
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onDeleteButtonClick(getAdapterPosition(), true);
-                }
-            });
+            deleteButton.setOnClickListener(v -> listener.onDeleteButtonClick(getAdapterPosition(), true));
 
-            completeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onCompleteButtonClick(getAdapterPosition(), true);
-                }
-            });
+            completeButton.setOnClickListener(v -> listener.onCompleteButtonClick(getAdapterPosition(), true));
         }
     }
 }

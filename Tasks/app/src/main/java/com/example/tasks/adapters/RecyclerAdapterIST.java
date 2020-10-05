@@ -61,26 +61,11 @@ public class RecyclerAdapterIST extends RecyclerView.Adapter<RecyclerAdapterIST.
             subTaskTitleTV = (TextView) itemView.findViewById(R.id.sub_task_item_title_tv);
             itemContainer = (ConstraintLayout) itemView.findViewById(R.id.sub_task_item_container);
 
-            subTaskTitleTV.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(getAdapterPosition(), false);
-                }
-            });
+            subTaskTitleTV.setOnClickListener(v -> listener.onItemClick(getAdapterPosition(), false));
 
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onDeleteButtonClick(getAdapterPosition(), false);
-                }
-            });
+            deleteButton.setOnClickListener(v -> listener.onDeleteButtonClick(getAdapterPosition(), false));
 
-            completeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onCompleteButtonClick(getAdapterPosition(), false);
-                }
-            });
+            completeButton.setOnClickListener(v -> listener.onCompleteButtonClick(getAdapterPosition(), false));
         }
     }
 }

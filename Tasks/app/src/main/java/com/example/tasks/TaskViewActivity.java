@@ -118,47 +118,22 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
 
         // Back button
         ImageButton backButton = (ImageButton) findViewById(R.id.back_image_button_task_view);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        backButton.setOnClickListener(v -> onBackPressed());
 
         // delete button
         ImageButton deleteButton = (ImageButton) findViewById(R.id.delete_task_image_button_task_view);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteTask();
-            }
-        });
+        deleteButton.setOnClickListener(v -> deleteTask());
 
         // edit list button : changes the list in which the task belongs
         ImageButton editListButton = (ImageButton) findViewById(R.id.edit_list_button_task_view);
-        editListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeList();
-            }
-        });
+        editListButton.setOnClickListener(v -> changeList());
 
         // change status button : toggles complete / incomplete
         changeStatusButton = (ImageButton) findViewById(R.id.complete_image_button_task_view);
-        changeStatusButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeStatus();
-            }
-        });
+        changeStatusButton.setOnClickListener(v -> changeStatus());
 
         Button addNewSubTaskButton = (Button) findViewById(R.id.task_view_add_new_sub_task_button);
-        addNewSubTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddNewSubTaskDialog();
-            }
-        });
+        addNewSubTaskButton.setOnClickListener(v -> showAddNewSubTaskDialog());
 
         // recycler views
         incompleteSubTasksRecyclerView = (RecyclerView) findViewById(R.id.sub_tasks_incomplete_recycler_view);
@@ -210,32 +185,21 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
 
-        taskTitleET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                taskTitleET.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager inputMethodManager = (InputMethodManager) TaskViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(taskTitleET, InputMethodManager.SHOW_IMPLICIT);
-                    }
-                });
-            }
-        });
+        taskTitleET.setOnFocusChangeListener((v, hasFocus) -> taskTitleET.post(() -> {
+            InputMethodManager inputMethodManager = (InputMethodManager) TaskViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.showSoftInput(taskTitleET, InputMethodManager.SHOW_IMPLICIT);
+        }));
 
-        addNewTasButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String title = taskTitleET.getText().toString().trim();
-                if (title.equals("")) {
-                    makeToast("Provide a valid title");
-                    alertDialog.dismiss();
-                } else {
-                    manager.addSubTask(title, task);
-                    recyclerAdapterIST.notifyDataSetChanged();
-                    alertDialog.dismiss();
-                    makeToast("Sub task added");
-                }
+        addNewTasButton.setOnClickListener(v -> {
+            String title = taskTitleET.getText().toString().trim();
+            if (title.equals("")) {
+                makeToast("Provide a valid title");
+                alertDialog.dismiss();
+            } else {
+                manager.addSubTask(title, task);
+                recyclerAdapterIST.notifyDataSetChanged();
+                alertDialog.dismiss();
+                makeToast("Sub task added");
             }
         });
         alertDialog.show();
@@ -261,14 +225,11 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         View dialogView = getLayoutInflater().inflate(R.layout.move_task_to_list_bottom_sheet, null);
         final BottomSheetDialog dialog = new BottomSheetDialog(this);
         dialog.setContentView(dialogView);
-        OnRecyclerItemClickListener listener = new OnRecyclerItemClickListener() {
-            @Override
-            public void onRecyclerItemCLick(int position) {
-                manager.moveTaskToList(task, position);
-                startListActivity();
-                dialog.cancel();
-                finish();
-            }
+        OnRecyclerItemClickListener listener = position -> {
+            manager.moveTaskToList(task, position);
+            startListActivity();
+            dialog.cancel();
+            finish();
         };
         RecyclerView moveTaskRecyclerView = (RecyclerView) dialogView.findViewById(R.id.move_task_to_recycler_view);
         moveTaskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -293,23 +254,15 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         alertDialog.setCanceledOnTouchOutside(false);
 
         positiveButton.setText(R.string.Delete);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.deleteTask(task);
-                makeToast("Task deleted");
-                alertDialog.cancel();
-                startListActivity();
-            }
+        positiveButton.setOnClickListener(v -> {
+            manager.deleteTask(task);
+            makeToast("Task deleted");
+            alertDialog.cancel();
+            startListActivity();
         });
 
         negativeButton.setText(R.string.Cancel);
-        negativeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.cancel();
-            }
-        });
+        negativeButton.setOnClickListener(v -> alertDialog.cancel());
         alertDialog.show();
     }
 
@@ -327,13 +280,10 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         Snackbar snackbar = Snackbar.make(completeSubTaskRecyclerView, R.string.SubTaskMarkedAsIncomplete, Snackbar.LENGTH_LONG);
         snackbar.setAnchorView(findViewById(R.id.task_view_bottom_bar));
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
-        snackbar.setAction(R.string.Undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.undoIncompleteSubTaskOf(task, subTask, position);
-                recyclerAdapterCST.notifyItemInserted(position);
-                recyclerAdapterIST.notifyDataSetChanged();
-            }
+        snackbar.setAction(R.string.Undo, v -> {
+            manager.undoIncompleteSubTaskOf(task, subTask, position);
+            recyclerAdapterCST.notifyItemInserted(position);
+            recyclerAdapterIST.notifyDataSetChanged();
         });
         snackbar.show();
     }
@@ -345,13 +295,10 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         Snackbar snackbar = Snackbar.make(incompleteSubTasksRecyclerView, R.string.SubTaskMarkedAsComplete, Snackbar.LENGTH_LONG);
         snackbar.setAnchorView(findViewById(R.id.task_view_bottom_bar));
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
-        snackbar.setAction(R.string.Undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.undoCompleteSubTaskOf(task, subTask, position);
-                recyclerAdapterIST.notifyItemInserted(position);
-                recyclerAdapterCST.notifyDataSetChanged();
-            }
+        snackbar.setAction(R.string.Undo, v -> {
+            manager.undoCompleteSubTaskOf(task, subTask, position);
+            recyclerAdapterIST.notifyItemInserted(position);
+            recyclerAdapterCST.notifyDataSetChanged();
         });
         snackbar.show();
     }
@@ -370,12 +317,9 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         Snackbar snackbar = Snackbar.make(completeSubTaskRecyclerView, R.string.SubTaskDeleted, Snackbar.LENGTH_LONG);
         snackbar.setAnchorView(findViewById(R.id.task_view_bottom_bar));
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
-        snackbar.setAction(R.string.Undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.undoDeleteCompleteSubTask(task, subTask, position);
-                recyclerAdapterCST.notifyItemInserted(position);
-            }
+        snackbar.setAction(R.string.Undo, v -> {
+            manager.undoDeleteCompleteSubTask(task, subTask, position);
+            recyclerAdapterCST.notifyItemInserted(position);
         });
         snackbar.show();
     }
@@ -388,12 +332,9 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         Snackbar snackbar = Snackbar.make(incompleteSubTasksRecyclerView, R.string.SubTaskDeleted, Snackbar.LENGTH_LONG);
         snackbar.setAnchorView(findViewById(R.id.task_view_bottom_bar));
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
-        snackbar.setAction(R.string.Undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.undoDeleteIncompleteSubTask(task, subTask, position);
-                recyclerAdapterIST.notifyItemInserted(position);
-            }
+        snackbar.setAction(R.string.Undo, v -> {
+            manager.undoDeleteIncompleteSubTask(task, subTask, position);
+            recyclerAdapterIST.notifyItemInserted(position);
         });
         snackbar.show();
     }
@@ -420,34 +361,23 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
 
-        taskTitleET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                taskTitleET.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager inputMethodManager = (InputMethodManager) TaskViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(taskTitleET, InputMethodManager.SHOW_IMPLICIT);
-                    }
-                });
-            }
-        });
+        taskTitleET.setOnFocusChangeListener((v, hasFocus) -> taskTitleET.post(() -> {
+            InputMethodManager inputMethodManager = (InputMethodManager) TaskViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.showSoftInput(taskTitleET, InputMethodManager.SHOW_IMPLICIT);
+        }));
 
-        addNewTasButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String title = taskTitleET.getText().toString().trim();
-                if (title.equals("")) {
-                    makeToast("Provide a valid title");
-                    alertDialog.dismiss();
-                } else {
-                    if (complete) manager.changeCompleteSubTaskTitle(task, position, title);
-                    else manager.changeIncompleteSubTaskTitle(task, position, title);
-                    if (complete) recyclerAdapterCST.notifyDataSetChanged();
-                    else recyclerAdapterIST.notifyDataSetChanged();
-                    alertDialog.dismiss();
-                    makeToast("Title of sub task changed");
-                }
+        addNewTasButton.setOnClickListener(v -> {
+            String title = taskTitleET.getText().toString().trim();
+            if (title.equals("")) {
+                makeToast("Provide a valid title");
+                alertDialog.dismiss();
+            } else {
+                if (complete) manager.changeCompleteSubTaskTitle(task, position, title);
+                else manager.changeIncompleteSubTaskTitle(task, position, title);
+                if (complete) recyclerAdapterCST.notifyDataSetChanged();
+                else recyclerAdapterIST.notifyDataSetChanged();
+                alertDialog.dismiss();
+                makeToast("Title of sub task changed");
             }
         });
 
@@ -470,12 +400,6 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
     public void makeToast(String str) {
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
 
     ItemTouchHelper.SimpleCallback simpleCallbackI = new ItemTouchHelper.SimpleCallback((ItemTouchHelper.UP | ItemTouchHelper.DOWN), ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override

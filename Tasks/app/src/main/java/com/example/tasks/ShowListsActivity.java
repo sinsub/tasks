@@ -53,30 +53,15 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
 
         // floating button
         FloatingActionButton addNewListButton = (FloatingActionButton) findViewById(R.id.add_task_list_fab);
-        addNewListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNewList();
-            }
-        });
+        addNewListButton.setOnClickListener(v -> addNewList());
 
         // Back image button
         ImageButton backImageButton = (ImageButton) findViewById(R.id.back_image_button);
-        backImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        backImageButton.setOnClickListener(v -> onBackPressed());
 
         // Settings image button
         ImageButton settingsButton = (ImageButton) findViewById(R.id.show_list_view_settings_button);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSettings();
-            }
-        });
+        settingsButton.setOnClickListener(v -> showSettings());
 
         setThisView();
     }
@@ -99,33 +84,22 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
 
-        taskListTitleET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                taskListTitleET.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager inputMethodManager= (InputMethodManager) ShowListsActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(taskListTitleET, InputMethodManager.SHOW_IMPLICIT);
-                    }
-                });
-            }
-        });
+        taskListTitleET.setOnFocusChangeListener((v, hasFocus) -> taskListTitleET.post(() -> {
+            InputMethodManager inputMethodManager= (InputMethodManager) ShowListsActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.showSoftInput(taskListTitleET, InputMethodManager.SHOW_IMPLICIT);
+        }));
 
 
-        addNewListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String title = taskListTitleET.getText().toString().trim();
-                if (title.equals("")) {
-                    makeToast("Provide a valid List title");
-                    alertDialog.dismiss();
-                } else {
-                    manager.addNewList(title);
-                    makeToast("New List added");
-                    recyclerAdapterTL.notifyDataSetChanged();
-                    alertDialog.dismiss();
-                }
+        addNewListButton.setOnClickListener(v -> {
+            String title = taskListTitleET.getText().toString().trim();
+            if (title.equals("")) {
+                makeToast("Provide a valid List title");
+                alertDialog.dismiss();
+            } else {
+                manager.addNewList(title);
+                makeToast("New List added");
+                recyclerAdapterTL.notifyDataSetChanged();
+                alertDialog.dismiss();
             }
         });
         alertDialog.show();
@@ -145,22 +119,19 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
         } else {
             themeTV.setText(R.string.Light);
         }
-        themeOption.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (manager.getUser().isDarkModeOn()) {
-                    manager.getUser().setDarkModeOff();
-                } else {
-                    manager.getUser().setDarkModeOn();
-                }
-                if (manager.getUser().isDarkModeOn()) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                }
-                manager.write();
-                dialog.cancel();
+        themeOption.setOnClickListener(v -> {
+            if (manager.getUser().isDarkModeOn()) {
+                manager.getUser().setDarkModeOff();
+            } else {
+                manager.getUser().setDarkModeOn();
             }
+            if (manager.getUser().isDarkModeOn()) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+            manager.write();
+            dialog.cancel();
         });
         dialog.show();
     }

@@ -57,24 +57,9 @@ public class RecyclerAdapterNIST extends RecyclerView.Adapter<RecyclerAdapterNIS
             subTaskTitleTV = (TextView) itemView.findViewById(R.id.sub_task_item_title_tv);
             itemContainer = (ConstraintLayout) itemView.findViewById(R.id.sub_task_item_container);
 
-            completeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onSubTaskCompleteButtonClick(getAdapterPosition(), false);
-                }
-            });
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onSubTaskDeleteButtonClick(getAdapterPosition(), false);
-                }
-            });
-            subTaskTitleTV.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onSubTaskItemClick(getAdapterPosition(), false);
-                }
-            });
+            completeButton.setOnClickListener(v -> listener.onSubTaskCompleteButtonClick(getAdapterPosition(), false));
+            deleteButton.setOnClickListener(v -> listener.onSubTaskDeleteButtonClick(getAdapterPosition(), false));
+            subTaskTitleTV.setOnClickListener(v -> listener.onSubTaskItemClick(getAdapterPosition(), false));
         }
     }
 }

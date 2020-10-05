@@ -44,7 +44,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     public TextView completedTaskListTitle; // weird stuff
 
     private RecyclerView recyclerViewI;     // for incomplete tasks
-    private RecyclerAdapterIT myAdapterI;           // adapter for incomplete task
+    private RecyclerAdapterIT myAdapterI;   // adapter for incomplete task
 
     private RecyclerView recyclerViewC;     // for complete tasks
     private RecyclerAdapterCT myAdapterC;
@@ -66,30 +66,11 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         // Bottom tray :
         //  Show all list image button
         ImageButton showAllLists = (ImageButton) findViewById(R.id.show_lists_button);
-        showAllLists.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startShowLists();
-            }
-        });
+        showAllLists.setOnClickListener(v -> startShowLists());
 
         //  show options image button
         ImageButton optionsButton = (ImageButton) findViewById(R.id.list_view_options);
-        optionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showOptions();
-            }
-        });
-
-        //  show setting image button
-        ImageButton settingsButton = (ImageButton) findViewById(R.id.list_view_settings_button);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSettings();
-            }
-        });
+        optionsButton.setOnClickListener(v -> showOptions());
 
 
         // Recycler views
@@ -107,12 +88,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
 
         // Floating button to add new task
         addTaskFAB = (FloatingActionButton) findViewById(R.id.add_task_fab);
-        addTaskFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddTaskDialog();
-            }
-        });
+        addTaskFAB.setOnClickListener(v -> showAddTaskDialog());
 
 
         // set up the list view for the first time
@@ -150,37 +126,26 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
 
-        taskTitleET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                taskTitleET.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager inputMethodManager= (InputMethodManager) ListViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(taskTitleET, InputMethodManager.SHOW_IMPLICIT);
-                    }
-                });
-            }
-        });
+        taskTitleET.setOnFocusChangeListener((v, hasFocus) -> taskTitleET.post(() -> {
+            InputMethodManager inputMethodManager= (InputMethodManager) ListViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.showSoftInput(taskTitleET, InputMethodManager.SHOW_IMPLICIT);
+        }));
 
-        addNewTasButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = taskTitleET.getText().toString();
-                String detail = taskDetailET.getText().toString();
-                detail.trim();
-                name = name.trim();
-                if (name.equals("")) {
-                    makeToast("Provide a valid Task title");
-                    alertDialog.dismiss();
-                } else {
-                    manager.addTask(name, detail, null);
-                    alertDialog.dismiss();
-                    Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.NewTaskAdded, Snackbar.LENGTH_LONG);
-                    snackbar.setAnchorView(addTaskFAB);
-                    snackbar.show();
-                    myAdapterI.notifyDataSetChanged();
-                }
+        addNewTasButton.setOnClickListener(v -> {
+            String name = taskTitleET.getText().toString();
+            String detail = taskDetailET.getText().toString();
+            detail.trim();
+            name = name.trim();
+            if (name.equals("")) {
+                makeToast("Provide a valid Task title");
+                alertDialog.dismiss();
+            } else {
+                manager.addTask(name, detail, null);
+                alertDialog.dismiss();
+                Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.NewTaskAdded, Snackbar.LENGTH_LONG);
+                snackbar.setAnchorView(addTaskFAB);
+                snackbar.show();
+                myAdapterI.notifyDataSetChanged();
             }
         });
         alertDialog.show();
@@ -205,26 +170,20 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         alertDialog.setCanceledOnTouchOutside(false);
 
         positiveButton.setText(R.string.Delete);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.deleteIncompleteTask(position);
-                Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.OneITDeleted, Snackbar.LENGTH_LONG);
-                snackbar.setAnchorView(addTaskFAB);
-                snackbar.show();
-                myAdapterI.notifyItemRemoved(position);
-                myAdapterI.notifyItemRangeChanged(position, myAdapterI.getItemCount());
-                alertDialog.cancel();
-            }
+        positiveButton.setOnClickListener(v -> {
+            manager.deleteIncompleteTask(position);
+            Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.OneITDeleted, Snackbar.LENGTH_LONG);
+            snackbar.setAnchorView(addTaskFAB);
+            snackbar.show();
+            myAdapterI.notifyItemRemoved(position);
+            myAdapterI.notifyItemRangeChanged(position, myAdapterI.getItemCount());
+            alertDialog.cancel();
         });
 
         negativeButton.setText(R.string.Cancel);
-        negativeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.cancel();
-                myAdapterI.notifyDataSetChanged();
-            }
+        negativeButton.setOnClickListener(v -> {
+            alertDialog.cancel();
+            myAdapterI.notifyDataSetChanged();
         });
         alertDialog.show();
     }
@@ -246,26 +205,20 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         alertDialog.setCanceledOnTouchOutside(false);
 
         positiveButton.setText(R.string.Delete);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.deleteCompleteTask(position);
-                Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.OneCTDeleted, Snackbar.LENGTH_LONG);
-                snackbar.setAnchorView(addTaskFAB);
-                snackbar.show();
-                myAdapterC.notifyItemRemoved(position);
-                myAdapterC.notifyItemRangeChanged(position, myAdapterC.getItemCount());
-                alertDialog.cancel();
-            }
+        positiveButton.setOnClickListener(v -> {
+            manager.deleteCompleteTask(position);
+            Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.OneCTDeleted, Snackbar.LENGTH_LONG);
+            snackbar.setAnchorView(addTaskFAB);
+            snackbar.show();
+            myAdapterC.notifyItemRemoved(position);
+            myAdapterC.notifyItemRangeChanged(position, myAdapterC.getItemCount());
+            alertDialog.cancel();
         });
 
         negativeButton.setText(R.string.Cancel);
-        negativeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.cancel();
-                myAdapterC.notifyDataSetChanged();
-            }
+        negativeButton.setOnClickListener(v -> {
+            alertDialog.cancel();
+            myAdapterC.notifyDataSetChanged();
         });
         alertDialog.show();
     }
@@ -287,27 +240,21 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         alertDialog.setCanceledOnTouchOutside(true);
 
         positiveButton.setText(R.string.Delete);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.deleteCompletedTasks();
-                Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.AllCTDeleted, Snackbar.LENGTH_LONG);
-                snackbar.setAnchorView(addTaskFAB);
-                snackbar.show();
-                myAdapterC.notifyDataSetChanged();
-                alertDialog.cancel();
-            }
+        positiveButton.setOnClickListener(v -> {
+            manager.deleteCompletedTasks();
+            Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.AllCTDeleted, Snackbar.LENGTH_LONG);
+            snackbar.setAnchorView(addTaskFAB);
+            snackbar.show();
+            myAdapterC.notifyDataSetChanged();
+            alertDialog.cancel();
         });
 
         negativeButton.setText(R.string.Cancel);
-        negativeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.cancel();
-            }
-        });
+        negativeButton.setOnClickListener(v -> alertDialog.cancel());
         alertDialog.show();
     }
+
+
 
 
     // Implemented methods of TaskCardViewListener!
@@ -327,13 +274,10 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         Snackbar snackbar = Snackbar.make(recyclerViewI, mssg, Snackbar.LENGTH_LONG);
         snackbar.setAnchorView(addTaskFAB);
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
-        snackbar.setAction(R.string.Undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.undoSetTaskComplete(task ,position);
-                myAdapterI.notifyItemInserted(position);
-                myAdapterC.notifyDataSetChanged();
-            }
+        snackbar.setAction(R.string.Undo, v -> {
+            manager.undoSetTaskComplete(task ,position);
+            myAdapterI.notifyItemInserted(position);
+            myAdapterC.notifyDataSetChanged();
         });
         snackbar.show();
 
@@ -350,13 +294,10 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         Snackbar snackbar = Snackbar.make(recyclerViewC, R.string.TaskMarkedAsIncomplete, Snackbar.LENGTH_LONG);
         snackbar.setAnchorView(addTaskFAB);
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
-        snackbar.setAction(R.string.Undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.undoSetTaskIncomplete(task ,position);
-                myAdapterC.notifyItemInserted(position);
-                myAdapterI.notifyDataSetChanged();
-            }
+        snackbar.setAction(R.string.Undo, v -> {
+            manager.undoSetTaskIncomplete(task ,position);
+            myAdapterC.notifyItemInserted(position);
+            myAdapterI.notifyDataSetChanged();
         });
         snackbar.show();
 
@@ -381,6 +322,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
 
 
 
+
     // function related to UI
     // show option bottom sheet
     private void showOptions() {
@@ -394,12 +336,9 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         if (manager.getOpenList().completeTaskCount() > 0) {
             TextView textView = (TextView) dialogView.findViewById(R.id.list_view_delete_complete_tasks_option_tv);
             textView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryText));
-            deleteCompletedTaskOption.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteCompletedTasks();
-                    dialog.cancel();
-                }
+            deleteCompletedTaskOption.setOnClickListener(v -> {
+                deleteCompletedTasks();
+                dialog.cancel();
             });
         } else {
             TextView textView = (TextView) dialogView.findViewById(R.id.list_view_delete_complete_tasks_option_tv);
@@ -415,23 +354,17 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         } else {
             TextView textView = (TextView) dialogView.findViewById(R.id.list_view_delete_list_option_tv);
             textView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryText));
-            deleteListOption.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteList();
-                    dialog.cancel();
-                }
+            deleteListOption.setOnClickListener(v -> {
+                deleteList();
+                dialog.cancel();
             });
         }
 
         // Rename list
         LinearLayout renameListOption = (LinearLayout) dialogView.findViewById(R.id.list_view_rename_list_option);
-        renameListOption.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                renameList();
-                dialog.cancel();
-            }
+        renameListOption.setOnClickListener(v -> {
+            renameList();
+            dialog.cancel();
         });
 
         // Sort by option
@@ -443,49 +376,15 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         } else if (order == Manager.CREATED_DATE) {
             sortByOptionTv.setText(R.string.CreationDate);
         }
-        sortByOption.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setSortOrder(order);
-                dialog.cancel();
-            }
+        sortByOption.setOnClickListener(v -> {
+            setSortOrder(order);
+            dialog.cancel();
         });
 
         dialog.show();
     }
 
-    // show setting botton sheet
-    private void showSettings() {
-        final View dialogView = getLayoutInflater().inflate(R.layout.settings_bottom_sheet, null);
-        final BottomSheetDialog dialog = new BottomSheetDialog(this);
-        dialog.setContentView(dialogView);
 
-        LinearLayout themeOption = (LinearLayout) dialogView.findViewById(R.id.settings_theme_option);
-        TextView themeTV = (TextView) dialogView.findViewById(R.id.settings_theme_option_tv);
-        if (manager.getUser().isDarkModeOn()) {
-            themeTV.setText(R.string.Dark);
-        } else {
-            themeTV.setText(R.string.Light);
-        }
-        themeOption.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (manager.getUser().isDarkModeOn()) {
-                    manager.getUser().setDarkModeOff();
-                } else {
-                    manager.getUser().setDarkModeOn();
-                }
-                if (manager.getUser().isDarkModeOn()) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                }
-                manager.write();
-                dialog.cancel();
-            }
-        });
-        dialog.show();
-    }
 
 
     // Methods related to the list :
@@ -507,33 +406,22 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
 
         taskListTitleET.setText(manager.getListTitle());
 
-        taskListTitleET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                taskListTitleET.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager inputMethodManager= (InputMethodManager) ListViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(taskListTitleET, InputMethodManager.SHOW_IMPLICIT);
-                    }
-                });
-            }
-        });
+        taskListTitleET.setOnFocusChangeListener((v, hasFocus) -> taskListTitleET.post(() -> {
+            InputMethodManager inputMethodManager= (InputMethodManager) ListViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.showSoftInput(taskListTitleET, InputMethodManager.SHOW_IMPLICIT);
+        }));
 
-        renameListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String title = taskListTitleET.getText().toString().trim();
-                if (title.equals("")) {
-                    Toast.makeText(ListViewActivity.this, "Provide a valid List title", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    manager.renameOpenList(title);
-                    makeToast("List renamed");
-                    setListView();
-                }
-                alertDialog.dismiss();
+        renameListButton.setOnClickListener(v -> {
+            String title = taskListTitleET.getText().toString().trim();
+            if (title.equals("")) {
+                Toast.makeText(ListViewActivity.this, "Provide a valid List title", Toast.LENGTH_SHORT).show();
             }
+            else {
+                manager.renameOpenList(title);
+                makeToast("List renamed");
+                setListView();
+            }
+            alertDialog.dismiss();
         });
         alertDialog.show();
         taskListTitleET.requestFocus();
@@ -556,23 +444,15 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         alertDialog.setCanceledOnTouchOutside(true);
 
         positiveButton.setText(R.string.Delete);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.deleteTaskList();
-                alertDialog.cancel();
-                makeToast("One list deleted");
-                startShowLists();
-            }
+        positiveButton.setOnClickListener(v -> {
+            manager.deleteTaskList();
+            alertDialog.cancel();
+            makeToast("One list deleted");
+            startShowLists();
         });
 
         negativeButton.setText(R.string.Cancel);
-        negativeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.cancel();
-            }
-        });
+        negativeButton.setOnClickListener(v -> alertDialog.cancel());
         alertDialog.show();
     }
 
@@ -593,26 +473,21 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             cDateTV.setTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
         }
 
-        myOrderOption.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.setOpenListComparator(Manager.MY_ORDER);
-                dialog.cancel();
-                setListView();
-            }
+        myOrderOption.setOnClickListener(v -> {
+            manager.setOpenListComparator(Manager.MY_ORDER);
+            dialog.cancel();
+            setListView();
         });
 
-        cDateOption.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manager.setOpenListComparator(Manager.CREATED_DATE);
-                dialog.cancel();
-                setListView();
-            }
+        cDateOption.setOnClickListener(v -> {
+            manager.setOpenListComparator(Manager.CREATED_DATE);
+            dialog.cancel();
+            setListView();
         });
         dialog.show();
 
     }
+
 
 
 

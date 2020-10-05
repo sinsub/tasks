@@ -78,20 +78,14 @@ public class RecyclerAdapterCT extends RecyclerView.Adapter<RecyclerAdapterCT.Vi
             taskIncompleteButton = (ImageButton) itemView.findViewById(R.id.task_item_complete_button);
             taskContainer = (LinearLayout) itemView.findViewById(R.id.task_item_container);
 
-            taskIncompleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = ViewHolder.this.getAdapterPosition();
-                    listener.incompleteTask(position);
-                }
+            taskIncompleteButton.setOnClickListener(v -> {
+                int position = ViewHolder.this.getAdapterPosition();
+                listener.incompleteTask(position);
             });
 
-            taskContainer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = ViewHolder.this.getAdapterPosition();
-                    listener.onTaskContainerClick(position, true);
-                }
+            taskContainer.setOnClickListener(v -> {
+                int position = ViewHolder.this.getAdapterPosition();
+                listener.onTaskContainerClick(position, true);
             });
         }
     }
