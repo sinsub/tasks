@@ -79,13 +79,13 @@ public class Manager {
 
     // add task to open list:
     public void quickAddTask(String title) {
-        Task task = new Task(formatString(title), "", null);
+        Task task = new Task(formatString(title), "", null, false);
         openList.addTask(task);
         write();
     }
 
-    public void addTask(String title, String details, LocalDateTime dueDate) {
-        Task task = new Task(formatString(title), formatString(details), dueDate);
+    public void addTask(String title, String details, LocalDateTime dueDate, boolean timeSet) {
+        Task task = new Task(formatString(title), formatString(details), dueDate, timeSet);
         openList.addTask(task);
         write();
     }
@@ -153,6 +153,7 @@ public class Manager {
 
     public boolean setTaskComplete(int index) {
         boolean ret = openList.setTasksComplete(index);
+
         write();
         return ret;
     }
@@ -196,7 +197,7 @@ public class Manager {
         } else if (openList.getTaskComparator().getClass().equals(Task.CREATED_TIME_ORDER.getClass())) {
             return CREATED_DATE;
         } else {
-            return 1;
+            return DUE_DATE;
         }
     }
 
@@ -205,6 +206,8 @@ public class Manager {
             openList.setTaskComparator(Task.MY_ORDER);
         } else if (comparator == CREATED_DATE) {
             openList.setTaskComparator(Task.CREATED_TIME_ORDER);
+        } else if (comparator == DUE_DATE) {
+            openList.setTaskComparator(Task.DUE_DATE_ORDER);
         }
         write();
     }

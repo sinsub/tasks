@@ -34,6 +34,28 @@
         android:background="@color/colorSecondaryBg" />
 
     <LinearLayout
+        android:id="@+id/list_view_sort_due_order_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/list_view_sort_due_order_option_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/DueDate"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorSecondaryBg" />
+
+    <LinearLayout
         android:id="@+id/list_view_sort_creation_order_option"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,6 +76,8 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/colorSecondaryBg" />
+
+
 
 
 </LinearLayout>

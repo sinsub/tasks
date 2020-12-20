@@ -9,14 +9,12 @@ public class SubTask implements Serializable {
 
     private String title;                       // title of the task
     private boolean status;                     // true if complete
-    private LocalDateTime dueTime;              // due time of the task
     private final long timeCreated;             // time when the task was created
 
     //Constructor
     public SubTask(String title, LocalDateTime dueTime) {
         this.title = title;
-        this.status = INCOMPLETE;
-        this.dueTime = dueTime;                 // new task defaults to incomplete
+        this.status = INCOMPLETE;              // new task defaults to incomplete
         timeCreated = System.currentTimeMillis();   // set to time of object creation
     }
 
@@ -39,13 +37,6 @@ public class SubTask implements Serializable {
     }
     public void setIncomplete() {
         status = INCOMPLETE;
-    }
-
-    public LocalDateTime getDueTime() {
-        return dueTime;
-    }
-    public void setDueTime(LocalDateTime dueTime) {
-        this.dueTime = dueTime;
     }
 
     public long getTimeCreated() {

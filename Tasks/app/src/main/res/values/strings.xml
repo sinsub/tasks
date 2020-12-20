@@ -41,7 +41,7 @@
     <string name="SubTasks">Sub Tasks</string>
     <string name="SubTask">Sub Task</string>
     <string name="SubTaskTitle">Sub Task title</string>
-    <string name="AddSubTask">Add Sub Tasks</string>
+    <string name="AddSubTask">Add Sub Task</string>
     <string name="Complete">Complete</string>
     <string name="AddNewSubTask">Add new Sub Task</string>
     <string name="ChangeSubTaskTitle">Change Sub Task Title</string>
@@ -55,4 +55,7 @@
     <string name="OneCTDeleted">One complete Task deleted</string>
     <string name="AllCTDeleted">All completed Tasks of this list deleted</string>
     <string name="OneListDeleted">One List deleted</string>
+    <string name="NoDateSet">No date set</string>
+    <string name="NoTimeSet">No time set</string>
+    <string name="Time">Time</string>
 </resources>

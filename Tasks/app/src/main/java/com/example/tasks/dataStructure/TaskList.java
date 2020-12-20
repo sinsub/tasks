@@ -82,6 +82,7 @@ public class TaskList implements Serializable {
         incompleteTasks.remove(task);
         task.setComplete();
         completeTasks.add(index, task);
+        sort();
     }
 
     // Just changes the list they belong too ---> CHANGE THIS!!!!
@@ -92,6 +93,7 @@ public class TaskList implements Serializable {
         incompleteTasks.remove(index);
         boolean ret = t.setComplete();
         completeTasks.add(t);
+        sort();
         return ret;
     }
 
@@ -100,6 +102,7 @@ public class TaskList implements Serializable {
         completeTasks.remove(task);
         task.setIncomplete();
         incompleteTasks.add(index, task);
+        sort();
     }
 
 

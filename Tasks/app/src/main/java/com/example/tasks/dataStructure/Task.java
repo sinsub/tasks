@@ -4,12 +4,13 @@ import android.media.SubtitleData;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 public class Task implements Serializable {
-    public static final Comparator<Task> COMPLETE_ORDER = new Completeness();
     public static final Comparator<Task> DUE_DATE_ORDER = new DueDate();
     public static final Comparator<Task> CREATED_TIME_ORDER = new CreatedTime();
     public static final Comparator<Task> MY_ORDER = new MyOrder();
@@ -20,16 +21,18 @@ public class Task implements Serializable {
     private String title;                       // title of the task
     private String details;                     // details of the task
     private boolean status;                     // true if complete
-    private final ArrayList<SubTask> incompleteSubTasks;     // list of subTasks
+    private final ArrayList<SubTask> incompleteSubTasks;
     private final ArrayList<SubTask> completeSubTasks;
     private LocalDateTime dueTime;              // due time of the task
+    private boolean timeSet;                    // due time was set or not
     private final long timeCreated;             // time when the task was created
 
     //Constructor
-    public Task(String title, String details, LocalDateTime dueTime) {
+    public Task(String title, String details, LocalDateTime dueTime, boolean timeSet) {
         this.title = title;
         this.details = details;
         this.dueTime = dueTime;
+        this.timeSet = timeSet;
         this.status = INCOMPLETE;                   // new task defaults to incomplete
         this.incompleteSubTasks = new ArrayList<>();
         this.completeSubTasks = new ArrayList<>();
@@ -46,7 +49,7 @@ public class Task implements Serializable {
 
     public boolean setComplete() {
         status = COMPLETE;
-        boolean deepComplete = true;
+        boolean deepComplete = true;    // true if all sub tasks are complete
         if (incompleteSubTasks.size() > 0)
             deepComplete = false;
         return deepComplete;
@@ -75,11 +78,57 @@ public class Task implements Serializable {
     public void setDueTime(LocalDateTime dueTime) {
         this.dueTime = dueTime;
     }
+    public String getFormattedDueTime() {
+        if (dueTime == null) return "";
+        String ret = "";
+        // check if today, tomorrow or yesterday :
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime yesterday = today.minusDays(1);
+        LocalDateTime tomorrow = today.plusDays(1);
+        if (today.truncatedTo(ChronoUnit.DAYS).equals(dueTime.truncatedTo(ChronoUnit.DAYS)))
+            ret = "Today";
+        else if (yesterday.truncatedTo(ChronoUnit.DAYS).equals(dueTime.truncatedTo(ChronoUnit.DAYS)))
+            ret = "Yesterday";
+        else if (tomorrow.truncatedTo(ChronoUnit.DAYS).equals(dueTime.truncatedTo(ChronoUnit.DAYS)))
+            ret = "Tomorrow";
+        else if (today.getYear() != dueTime.getYear())
+            ret = dueTime.format(DateTimeFormatter.ofPattern("EEE, dd MMM yy"));
+        else if (today.getMonth() != dueTime.getMonth())
+            ret = dueTime.format(DateTimeFormatter.ofPattern("EEE, dd MMM"));
+        else
+            ret = dueTime.format(DateTimeFormatter.ofPattern("EEE, dd"));
+        // if timeSet add it to string
+        if (timeSet)
+            ret = ret + dueTime.format(DateTimeFormatter.ofPattern(", HH:mm"));
+        return ret;
+    }
+
+    public String getFormattedDue_Date() {
+        if (dueTime == null) return "";
+        return dueTime.format(DateTimeFormatter.ofPattern("EEE, dd MMM yy"));
+    }
+    public String getFormattedDue_Time() {
+        if (!timeSet) return "";
+        return dueTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    public boolean isTimeSet() {
+        return timeSet;
+    }
+    public void setTimeSet(boolean timeSet) {
+        this.timeSet = timeSet;
+    }
 
     public long getTimeCreated() {
         return timeCreated;
     }
 
+    // if no date is set in in future
+    public boolean isInPast() {
+        if (!timeSet)
+            return dueTime != null && dueTime.isBefore(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS));
+        return dueTime != null && dueTime.isBefore(LocalDateTime.now());
+    }
 
     /*************************************************
      * functions related to SubTasks
@@ -186,19 +235,7 @@ public class Task implements Serializable {
     /***************************************************
      *  Comparators
      ***************************************************/
-
-    public static class Completeness implements Comparator<Task>, Serializable{
-
-        @Override
-        public int compare(Task o1, Task o2) {
-            if (o1.isComplete() && !o2.isComplete()) return +1;
-            if (!o1.isComplete() && o2.isComplete()) return -1;
-            return 0;
-        }
-    }
-
     public static class DueDate implements Comparator<Task>, Serializable {
-
         @Override
         public int compare(Task o1, Task o2) {
             if (o1.dueTime == null && o2.dueTime == null)
@@ -207,6 +244,11 @@ public class Task implements Serializable {
                 return +1;
             if (o2.dueTime == null)
                 return -1;
+            if (o1.dueTime.truncatedTo(ChronoUnit.DAYS).equals(o2.dueTime.truncatedTo(ChronoUnit.DAYS))) {
+                if (!o1.timeSet && !o2.timeSet) return 0;
+                else if (!o1.timeSet) return +1;
+                else if (!o2.timeSet) return -1;
+            }
             return o1.dueTime.compareTo(o2.dueTime);
         }
     }

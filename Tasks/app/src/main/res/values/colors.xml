@@ -9,4 +9,6 @@
     <color name="colorPrimaryBg">#FFFFFF</color>
     <color name="colorSecondaryBg">#EBEBF6</color>
     <color name="colorUnavailableText">#B4B4B4</color>
+    <color name="colorBlueText">#98B5CC</color>
+    <color name="colorRedText">#C15C55</color>
 </resources>

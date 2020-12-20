@@ -4,35 +4,40 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.tasks.adapters.RecyclerAdapterCT;
 import com.example.tasks.adapters.RecyclerAdapterIT;
-import com.example.tasks.dataStructure.SubTask;
 import com.example.tasks.dataStructure.Task;
-import com.example.tasks.interfaces.OnSubTaskItemClickListener;
 import com.example.tasks.interfaces.TaskCardViewListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
@@ -52,6 +57,11 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
 
     FloatingActionButton addTaskFAB;
 
+    private DatePickerDialog datePickerDialog;
+    int setYear = 0, setMonth = 0, setDay = 0;
+    int setHour = 0, setMinute = 0;
+    boolean dateSet = false;
+    boolean timeSet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +100,6 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         addTaskFAB = (FloatingActionButton) findViewById(R.id.add_task_fab);
         addTaskFAB.setOnClickListener(v -> showAddTaskDialog());
 
-
         // set up the list view for the first time
         setListView();
     }
@@ -119,35 +128,118 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
 
         final EditText taskTitleET = (EditText) mView.findViewById(R.id.new_task_title);
         final EditText taskDetailET = (EditText) mView.findViewById(R.id.new_task_details);
-        Button addNewTasButton = (Button) mView.findViewById(R.id.add_new_task_button);
+        Button addNewTaskButton = (Button) mView.findViewById(R.id.add_new_task_button);
+        ImageButton setTaskDate = (ImageButton) mView.findViewById(R.id.new_task_set_date_btn);
+        ImageButton setTaskTime = (ImageButton) mView.findViewById(R.id.new_task_set_time_btn);
+        TextView newTaskDateTV = (TextView) mView.findViewById(R.id.new_task_date_text_view);
+        TextView newTaskTimeTV = (TextView) mView.findViewById(R.id.new_task_time_text_view);
+        ImageButton removeDate = (ImageButton) mView.findViewById(R.id.new_task_remove_date_btn);
+        ImageButton removeTime = (ImageButton) mView.findViewById(R.id.new_task_remove_time_btn);
+        setTaskTime.setVisibility(View.GONE);
+        newTaskTimeTV.setVisibility(View.GONE);
+        removeDate.setVisibility(View.GONE);
+        removeTime.setVisibility(View.GONE);
+        removeDate.setOnClickListener(v -> {
+            newTaskDateTV.setText("");
+            newTaskTimeTV.setText("");
+            setTaskTime.setVisibility(View.GONE);
+            newTaskTimeTV.setVisibility(View.GONE);
+            removeDate.setVisibility(View.GONE);
+            removeTime.setVisibility(View.GONE);
+            setYear = setDay = setMonth = setHour = setMinute = 0;
+            dateSet = false;
+        });
+        removeTime.setOnClickListener(v -> {
+            newTaskTimeTV.setText("");
+            removeTime.setVisibility(View.GONE);
+            setHour = setMinute = 0;
+            timeSet = false;
+        });
 
-        alert.setView(mView);
 
-        alertDialog = alert.create();
-        alertDialog.setCanceledOnTouchOutside(true);
+        setYear = setDay = setMonth = setHour = setMinute = 0;
+        dateSet = timeSet = false;
+
+
 
         taskTitleET.setOnFocusChangeListener((v, hasFocus) -> taskTitleET.post(() -> {
             InputMethodManager inputMethodManager= (InputMethodManager) ListViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.showSoftInput(taskTitleET, InputMethodManager.SHOW_IMPLICIT);
         }));
 
-        addNewTasButton.setOnClickListener(v -> {
+        setTaskDate.setOnClickListener(v -> {
+            final Calendar cldr = Calendar.getInstance();
+            int mday = cldr.get(Calendar.DAY_OF_MONTH);
+            int mmonth = cldr.get(Calendar.MONTH);
+            int myear = cldr.get(Calendar.YEAR);
+            // date picker dialog
+            datePickerDialog = new DatePickerDialog(ListViewActivity.this, R.style.MyDatePickerStyle ,
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            setYear = year;
+                            setDay = dayOfMonth;
+                            setMonth = monthOfYear;
+                            dateSet = true;
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy");
+                            newTaskDateTV.setText(dateFormat.format(new Date(setYear - 1900, setMonth, setDay, setHour, setMinute)));
+                            setTaskTime.setVisibility(View.VISIBLE);
+                            removeDate.setVisibility(View.VISIBLE);
+                            newTaskTimeTV.setVisibility(View.VISIBLE);
+                        }
+                    }, myear, mmonth, mday);
+            datePickerDialog.show();
+
+        });
+
+        setTaskTime.setOnClickListener(v -> {
+            final Calendar c = Calendar.getInstance();
+            int mHour = c.get(Calendar.HOUR_OF_DAY);
+            int mMinute = c.get(Calendar.MINUTE);
+
+            // Launch Time Picker Dialog
+            TimePickerDialog timePickerDialog = new TimePickerDialog(ListViewActivity.this,
+                    new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            setHour = hourOfDay;
+                            setMinute = minute;
+                            timeSet = true;
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("HH : mm");
+                            newTaskTimeTV.setText(dateFormat.format(new Date(setYear - 1900, setMonth, setDay, setHour, setMinute)));
+                            removeTime.setVisibility(View.VISIBLE);
+                        }
+                    }, mHour, mMinute, false);
+            timePickerDialog.show();
+        });
+
+        addNewTaskButton.setOnClickListener(v -> {
             String name = taskTitleET.getText().toString();
             String detail = taskDetailET.getText().toString();
             detail.trim();
             name = name.trim();
             if (name.equals("")) {
                 makeToast("Provide a valid Task title");
-                alertDialog.dismiss();
             } else {
-                manager.addTask(name, detail, null);
+                LocalDateTime taskDateTime = null;
+                if (dateSet) taskDateTime = LocalDateTime.of(setYear, setMonth + 1, setDay, setHour, setMinute);
+                manager.addTask(name, detail, taskDateTime, timeSet);
                 alertDialog.dismiss();
                 Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.NewTaskAdded, Snackbar.LENGTH_LONG);
                 snackbar.setAnchorView(addTaskFAB);
+                View sbView = snackbar.getView();
+                sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
                 snackbar.show();
+                // change to : myAdapterI.notifyItemInserted(position);
                 myAdapterI.notifyDataSetChanged();
             }
         });
+
+        alert.setView(mView);
+
+        alertDialog = alert.create();
+        alertDialog.setCanceledOnTouchOutside(true);
+
         alertDialog.show();
         taskTitleET.requestFocus();
     }
@@ -156,6 +248,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     private void deleteIncompleteTask(final int position) {
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(ListViewActivity.this);
+        alert.setCancelable(false);
         View mView = getLayoutInflater().inflate(R.layout.continue_or_cancle, null);
 
         final TextView messageTextView = (TextView) mView.findViewById(R.id.message_text_view);
@@ -174,6 +267,8 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             manager.deleteIncompleteTask(position);
             Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.OneITDeleted, Snackbar.LENGTH_LONG);
             snackbar.setAnchorView(addTaskFAB);
+            View sbView = snackbar.getView();
+            sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
             snackbar.show();
             myAdapterI.notifyItemRemoved(position);
             myAdapterI.notifyItemRangeChanged(position, myAdapterI.getItemCount());
@@ -183,7 +278,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         negativeButton.setText(R.string.Cancel);
         negativeButton.setOnClickListener(v -> {
             alertDialog.cancel();
-            myAdapterI.notifyDataSetChanged();
+            setListView();
         });
         alertDialog.show();
     }
@@ -191,6 +286,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     // delete a complete task on swipe
     private void deleteCompleteTask(final int position) {
         final AlertDialog.Builder alert = new AlertDialog.Builder(ListViewActivity.this);
+        alert.setCancelable(false);
         View mView = getLayoutInflater().inflate(R.layout.continue_or_cancle, null);
 
         final TextView messageTextView = (TextView) mView.findViewById(R.id.message_text_view);
@@ -209,6 +305,8 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             manager.deleteCompleteTask(position);
             Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.OneCTDeleted, Snackbar.LENGTH_LONG);
             snackbar.setAnchorView(addTaskFAB);
+            View sbView = snackbar.getView();
+            sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
             snackbar.show();
             myAdapterC.notifyItemRemoved(position);
             myAdapterC.notifyItemRangeChanged(position, myAdapterC.getItemCount());
@@ -218,7 +316,8 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         negativeButton.setText(R.string.Cancel);
         negativeButton.setOnClickListener(v -> {
             alertDialog.cancel();
-            myAdapterC.notifyDataSetChanged();
+//            myAdapterC.notifyDataSetChanged();
+            setListView();
         });
         alertDialog.show();
     }
@@ -244,6 +343,8 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             manager.deleteCompletedTasks();
             Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.AllCTDeleted, Snackbar.LENGTH_LONG);
             snackbar.setAnchorView(addTaskFAB);
+            View sbView = snackbar.getView();
+            sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
             snackbar.show();
             myAdapterC.notifyDataSetChanged();
             alertDialog.cancel();
@@ -253,8 +354,6 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         negativeButton.setOnClickListener(v -> alertDialog.cancel());
         alertDialog.show();
     }
-
-
 
 
     // Implemented methods of TaskCardViewListener!
@@ -279,6 +378,8 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             myAdapterI.notifyItemInserted(position);
             myAdapterC.notifyDataSetChanged();
         });
+        View sbView = snackbar.getView();
+        sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
         snackbar.show();
 
     }
@@ -299,6 +400,8 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             myAdapterC.notifyItemInserted(position);
             myAdapterI.notifyDataSetChanged();
         });
+        View sbView = snackbar.getView();
+        sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
         snackbar.show();
 
     }
@@ -375,6 +478,8 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             sortByOptionTv.setText(R.string.MyOrder);
         } else if (order == Manager.CREATED_DATE) {
             sortByOptionTv.setText(R.string.CreationDate);
+        } else if (order == Manager.DUE_DATE) {
+            sortByOptionTv.setText(R.string.DueDate);
         }
         sortByOption.setOnClickListener(v -> {
             setSortOrder(order);
@@ -466,11 +571,15 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         TextView myOrderTV = (TextView) dialogView.findViewById(R.id.list_view_sort_my_order_option_tv);
         LinearLayout cDateOption = (LinearLayout) dialogView.findViewById(R.id.list_view_sort_creation_order_option);
         TextView cDateTV = (TextView) dialogView.findViewById(R.id.list_view_sort_creation_order_option_tv);
+        LinearLayout dDateOption = (LinearLayout) dialogView.findViewById(R.id.list_view_sort_due_order_option);
+        TextView dDateTV = (TextView) dialogView.findViewById(R.id.list_view_sort_due_order_option_tv);
 
         if (order == Manager.MY_ORDER) {
             myOrderTV.setTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
         } else if (order == Manager.CREATED_DATE) {
             cDateTV.setTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
+        } else if (order == Manager.DUE_DATE) {
+            dDateTV.setTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
         }
 
         myOrderOption.setOnClickListener(v -> {
@@ -484,6 +593,13 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             dialog.cancel();
             setListView();
         });
+
+        dDateOption.setOnClickListener(v -> {
+            manager.setOpenListComparator(Manager.DUE_DATE);
+            dialog.cancel();
+            setListView();
+        });
+
         dialog.show();
 
     }

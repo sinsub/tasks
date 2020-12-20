@@ -31,7 +31,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/Dark"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textColor="@color/colorSecondaryText"
             android:textSize="14sp" />
     </LinearLayout>

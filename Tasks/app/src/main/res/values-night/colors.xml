@@ -5,9 +5,11 @@
     <color name="colorPrimaryDark">#201C1C</color>
     <color name="colorAccentPrimary">#025C53</color>
     <color name="colorAccentSecondary">#03DAC5</color>
-    <color name="colorPrimaryText">#F6F6F6</color>
-    <color name="colorSecondaryText">#D8C0C0</color>
-    <color name="colorPrimaryBg">#141923</color>
-    <color name="colorSecondaryBg">#282828</color>
+    <color name="colorPrimaryText">#FFD5D5</color>
+    <color name="colorSecondaryText">#99D1B2</color>
+    <color name="colorPrimaryBg">#1A2321</color>
+    <color name="colorSecondaryBg">#302B2B</color>
     <color name="colorUnavailableText">#646464</color>
+    <color name="colorBlueText">#98B5CC</color>
+    <color name="colorRedText">#FA841C</color>
 </resources>

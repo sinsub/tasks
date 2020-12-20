@@ -28,6 +28,10 @@ import com.example.tasks.interfaces.TaskCardViewListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class RecyclerAdapterIT extends RecyclerView.Adapter<RecyclerAdapterIT.ViewHolder> {
@@ -60,8 +64,18 @@ public class RecyclerAdapterIT extends RecyclerView.Adapter<RecyclerAdapterIT.Vi
         String details = t.getDetails();
         if (details == null || details.equals(""))
             holder.taskDetailsTV.setVisibility(View.GONE);
-        else
+        else {
+            holder.taskDetailsTV.setVisibility(View.VISIBLE);
             holder.taskDetailsTV.setText(details);
+        }
+        if (t.getDueTime() == null)
+            holder.taskDueDateTimeTV.setVisibility(View.GONE);
+        else {
+            holder.taskDueDateTimeTV.setVisibility(View.VISIBLE);
+            holder.taskDueDateTimeTV.setText(t.getFormattedDueTime());
+            if (t.isInPast()) holder.taskDueDateTimeTV.setTextColor(context.getResources().getColor(R.color.colorRedText));
+            else holder.taskDueDateTimeTV.setTextColor(context.getResources().getColor(R.color.colorBlueText));
+        }
         // recycler view
         holder.recyclerAdapterNIST = new RecyclerAdapterNIST(taskList.getIncompleteTask(position), holder.onNestedSubTaskItemListener);
         holder.subTasksRV.setAdapter(holder.recyclerAdapterNIST);
@@ -75,6 +89,7 @@ public class RecyclerAdapterIT extends RecyclerView.Adapter<RecyclerAdapterIT.Vi
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView taskTitleTV;
         public TextView taskDetailsTV;
+        public TextView taskDueDateTimeTV;
         public ImageButton taskCompleteButton;
         public LinearLayout taskContainer;
         public RecyclerView subTasksRV;
@@ -86,6 +101,7 @@ public class RecyclerAdapterIT extends RecyclerView.Adapter<RecyclerAdapterIT.Vi
 
             taskTitleTV = (TextView) itemView.findViewById(R.id.task_title_tv);
             taskDetailsTV = (TextView) itemView.findViewById(R.id.task_details_tv);
+            taskDueDateTimeTV = (TextView) itemView.findViewById(R.id.task_due_date_time_tv);
             taskCompleteButton = (ImageButton) itemView.findViewById(R.id.task_item_complete_button);
             taskContainer = (LinearLayout) itemView.findViewById(R.id.task_item_container);
             subTasksRV = (RecyclerView) itemView.findViewById(R.id.task_card_view_sub_task_recycler_view);

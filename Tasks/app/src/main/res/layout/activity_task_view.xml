@@ -22,7 +22,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorSecondaryBg"
+            android:background="@color/colorPrimaryBg"
             android:padding="12dp">
 
             <TextView
@@ -67,7 +67,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginStart="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -85,12 +86,8 @@
                         android:hint="@string/TaskTitle"
                         android:textColorHint="@color/colorUnavailableText"
                         android:inputType="textMultiLine"
-                        android:textSize="20sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/colorSecondaryBg" />
+                        android:textSize="20sp"
+                        android:textStyle="bold"/>
 
 
 
@@ -111,7 +108,6 @@
                                 android:id="@+id/imageView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
                                 android:adjustViewBounds="true"
                                 android:scaleType="fitCenter"
                                 android:src="@drawable/ic_baseline_notes_24"
@@ -129,17 +125,49 @@
                                 android:hint="@string/AddDetails"
                                 android:textColorHint="@color/colorUnavailableText"
                                 android:inputType="textMultiLine"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                                 android:textSize="16sp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toEndOf="@+id/imageView"
                                 app:layout_constraintTop_toTopOf="parent" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:background="@color/colorSecondaryBg" />
 
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/task_due_date_constraint_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp">
+
+                        <ImageButton
+                            android:id="@+id/task_date_image_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:background="@null"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_baseline_event_note_24"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/task_due_date_text_view"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="@null"
+                            android:ems="10"
+                            android:hint="@string/NoDateSet"
+                            android:textColorHint="@color/colorUnavailableText"
+                            android:textSize="16sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/task_date_image_btn"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/colorSecondaryBg" />
 
                     <TextView
                         android:id="@+id/task_view_sub_task_header"

@@ -2,60 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottomSheetContainer"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/colorPrimaryBg"
-    android:orientation="vertical">
-
-    <EditText
-        android:id="@+id/new_task_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@null"
-        android:ems="10"
-        android:hint="@string/TaskTitle"
-        android:textColorHint="@color/colorUnavailableText"
-        android:inputType="textPersonName"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="18sp"/>
-
-    <EditText
-        android:id="@+id/new_task_details"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="18dp"
-        android:background="@null"
-        android:ems="10"
-        android:hint="@string/AddDetails"
-        android:textColorHint="@color/colorUnavailableText"
-        android:inputType="textPersonName"
-        android:textSize="14sp"/>
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryBg">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+
         <Button
-            android:id="@+id/add_new_task_button"
+            android:id="@+id/cancel_task_date_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginEnd="8dp"
             android:background="@null"
-            android:text="@string/Add"
+            android:text="@string/Cancel"
             android:textAllCaps="false"
             android:textColor="@color/colorAccentSecondary"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/new_task_date_text_view"
+            android:id="@+id/task_date_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -63,22 +34,22 @@
             android:hint="@string/NoDateSet"
             android:textColor="@color/colorSecondaryText"
             android:textColorHint="@color/colorUnavailableText"
-            app:layout_constraintStart_toEndOf="@+id/new_task_set_date_btn"
+            app:layout_constraintStart_toEndOf="@+id/task_set_date_btn"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/new_task_remove_date_btn"
+            android:id="@+id/task_remove_date_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:background="@null"
-            app:layout_constraintStart_toEndOf="@+id/new_task_date_text_view"
+            app:layout_constraintStart_toEndOf="@+id/task_date_text_view"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_clear_24" />
 
         <ImageButton
-            android:id="@+id/new_task_set_date_btn"
+            android:id="@+id/task_set_date_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -90,21 +61,19 @@
             app:srcCompat="@drawable/ic_baseline_event_note_24" />
 
         <ImageButton
-            android:id="@+id/new_task_set_time_btn"
+            android:id="@+id/task_set_time_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:background="@null"
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/new_task_set_date_btn"
             app:srcCompat="@drawable/ic_baseline_access_time_24" />
 
         <TextView
-            android:id="@+id/new_task_time_text_view"
+            android:id="@+id/task_time_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -113,18 +82,32 @@
             android:textColor="@color/colorSecondaryText"
             android:textColorHint="@color/colorUnavailableText"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/new_task_set_time_btn" />
+            app:layout_constraintStart_toEndOf="@+id/task_set_time_btn" />
 
         <ImageButton
-            android:id="@+id/new_task_remove_time_btn"
+            android:id="@+id/task_remove_time_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="16dp"
             android:background="@null"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/new_task_time_text_view"
+            app:layout_constraintStart_toEndOf="@+id/task_time_text_view"
             app:srcCompat="@drawable/ic_baseline_clear_24" />
+
+        <Button
+            android:id="@+id/save_task_date_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@null"
+            android:text="@string/Save"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccentSecondary"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cancel_task_date_btn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

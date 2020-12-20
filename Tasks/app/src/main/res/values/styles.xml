@@ -7,6 +7,31 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccentPrimary</item>
         <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
+    </style>
+
+    <!-- Date Picker style-->
+    <style name="MyDatePickerStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccentPrimary</item>
+        <!--selected Item color-->
+        <item name="colorControlActivated">@color/colorAccentPrimary</item>
+        <!-- arrow bordercolor(<>)-->
+        <item name="android:selectableItemBackgroundBorderless">@color/colorSecondaryBg</item>
+        <!-- Highlight item color-->
+        <item name="colorControlHighlight">@color/colorAccentPrimary</item>
+        <!--Calender Background color -->
+        <item name="android:windowBackground">@color/colorSecondaryBg</item>
+        <!-- Ok Cancel Color-->
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <!-- Week TextColor-->
+        <item name="android:textColorSecondary">@color/colorSecondaryText</item>
+        <!-- Calender Number color arrow color (< >) -->
+        <item name="android:textColorPrimary">@color/colorSecondaryText</item>
+        <!--day , month-->
+        <item name="android:textColorPrimaryInverse">@color/colorAccentSecondary</item>
+        <!-- year-->
+        <item name="android:textColorSecondaryInverse">@color/colorAccentSecondary</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">
