@@ -8,29 +8,33 @@ import java.util.Collections;
 
 public class User implements Serializable {
     private final ArrayList<TaskList> taskLists;
-    private int openIndex;
+    private int openIndex;      // index of the TaskList that is open
     private boolean darkMode;
 
     public User() {
         taskLists = new ArrayList<>();
         taskLists.add(new TaskList("ToDo List"));   // default TaskList
         openIndex = 0;
-        darkMode = true;
+        darkMode = true;    // default dark mode
     }
 
-    public void addTaskList(TaskList taskList) {
+    public int addTaskList(TaskList taskList) {
         if (taskList == null) throw new IllegalArgumentException("TaskList cannot be null!");
         taskLists.add(taskList);
         openIndex = taskLists.indexOf(taskList);
+        return taskLists.size() - 1;
     }
 
+    // delete task list that is open
+    // does not delete the default task list
     public void deleteTaskList() {
         if (openIndex < 0 || openIndex >= taskLists.size())
             throw new IllegalArgumentException("OpenIndex out of bounds while deleting!");
-        if (openIndex == 0) return;                         // cannot remove default TaskList
+        if (openIndex == 0) return;     // cannot remove default TaskList
         taskLists.remove(openIndex);
         openIndex = 0;
     }
+
 
     public TaskList getTaskList(int index) {
         if (index < 0 || index >= taskLists.size()) throw new IllegalArgumentException("Index out of bounds!");
@@ -56,8 +60,10 @@ public class User implements Serializable {
     }
 
     public void swapTaskLists(int index1, int index2) {
-        if (index1 < 0 || index1 >= taskLists.size()) throw new IllegalArgumentException("Index out of bounds!");
-        if (index2 < 0 || index2 >= taskLists.size()) throw new IllegalArgumentException("Index out of bounds!");
+        if (index1 < 0 || index1 >= taskLists.size())
+            throw new IllegalArgumentException("Index out of bounds!");
+        if (index2 < 0 || index2 >= taskLists.size())
+            throw new IllegalArgumentException("Index out of bounds!");
         Collections.swap(taskLists, index1, index2);
     }
 
@@ -77,11 +83,5 @@ public class User implements Serializable {
     public boolean isDarkModeOn() {
         return darkMode;
     }
-
-    @Override
-    public String toString() {
-        return Integer.toString(openIndex);
-    }
-
 }
 

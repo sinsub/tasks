@@ -45,8 +45,8 @@ public class RecyclerAdapterCT extends RecyclerView.Adapter<RecyclerAdapterCT.Vi
         final Task t = taskList.getCompletedTask(position);
         holder.taskTitleTV.setText(t.getTitle());
         holder.taskDetailsTV.setVisibility(View.GONE);
+        holder.taskDueDateTimeTV.setVisibility(View.GONE);
         holder.taskIncompleteButton.setImageResource(R.drawable.ic_baseline_check_24);
-
         holder.taskTitleTV.setPaintFlags(holder.taskTitleTV.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
@@ -66,6 +66,7 @@ public class RecyclerAdapterCT extends RecyclerView.Adapter<RecyclerAdapterCT.Vi
 
         public TextView taskTitleTV;
         public TextView taskDetailsTV;
+        public TextView taskDueDateTimeTV;
         public ImageButton taskIncompleteButton;
         public CardView taskHolderCV;
         public LinearLayout taskContainer;
@@ -75,6 +76,7 @@ public class RecyclerAdapterCT extends RecyclerView.Adapter<RecyclerAdapterCT.Vi
 
             taskTitleTV = (TextView) itemView.findViewById(R.id.task_title_tv);
             taskDetailsTV = (TextView) itemView.findViewById(R.id.task_details_tv);
+            taskDueDateTimeTV = (TextView) itemView.findViewById(R.id.task_due_date_time_tv);
             taskIncompleteButton = (ImageButton) itemView.findViewById(R.id.task_item_complete_button);
             taskContainer = (LinearLayout) itemView.findViewById(R.id.task_item_container);
 

@@ -34,7 +34,6 @@
                 android:id="@+id/list_view_sort_option_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:text="@string/MyOrder"
                 android:textColor="@color/colorSecondaryText"
                 android:textSize="14sp" />

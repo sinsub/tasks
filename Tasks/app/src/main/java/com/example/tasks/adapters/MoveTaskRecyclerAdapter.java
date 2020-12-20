@@ -59,7 +59,6 @@ public class MoveTaskRecyclerAdapter extends RecyclerView.Adapter<MoveTaskRecycl
             super(itemView);
             listNameTV = (TextView) itemView.findViewById(R.id.task_list_title_tv);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.task_list_item_container);
-
             linearLayout.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 listener.onRecyclerItemCLick(position);

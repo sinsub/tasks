@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/ListTitle"
                 android:maxLines="1"
+                android:ellipsize="end"
                 android:textAlignment="center"
                 android:textColor="@color/colorAccentSecondary"
                 android:textColorHint="@color/colorUnavailableText"
@@ -51,7 +52,7 @@
                 android:padding="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_edit_24" />
+                app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -86,11 +87,7 @@
                         android:hint="@string/TaskTitle"
                         android:textColorHint="@color/colorUnavailableText"
                         android:inputType="textMultiLine"
-                        android:textSize="20sp"
-                        android:textStyle="bold"/>
-
-
-
+                        android:textSize="22sp"/>
                 </LinearLayout>
 
 
@@ -258,15 +255,20 @@
             android:id="@+id/back_image_button_task_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5"
+            android:layout_weight="4"
             android:background="@null"
             app:srcCompat="@drawable/ic_baseline_arrow_back_24_accent" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3" />
 
         <ImageButton
             android:id="@+id/complete_image_button_task_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5"
+            android:layout_weight="4"
             android:background="@null"
             app:srcCompat="@drawable/ic_baseline_check_24" />
 
@@ -274,13 +276,10 @@
             android:id="@+id/delete_task_image_button_task_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5"
+            android:layout_weight="4"
             android:background="@null"
             app:srcCompat="@drawable/ic_baseline_delete_24_accent" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

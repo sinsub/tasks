@@ -1,7 +1,5 @@
 package com.example.tasks.dataStructure;
 
-import android.media.SubtitleData;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,15 +21,15 @@ public class Task implements Serializable {
     private boolean status;                     // true if complete
     private final ArrayList<SubTask> incompleteSubTasks;
     private final ArrayList<SubTask> completeSubTasks;
-    private LocalDateTime dueTime;              // due time of the task
+    private LocalDateTime dueDateTime;              // due date and time of the task
     private boolean timeSet;                    // due time was set or not
     private final long timeCreated;             // time when the task was created
 
     //Constructor
-    public Task(String title, String details, LocalDateTime dueTime, boolean timeSet) {
+    public Task(String title, String details, LocalDateTime dueDateTime, boolean timeSet) {
         this.title = title;
         this.details = details;
-        this.dueTime = dueTime;
+        this.dueDateTime = dueDateTime;
         this.timeSet = timeSet;
         this.status = INCOMPLETE;                   // new task defaults to incomplete
         this.incompleteSubTasks = new ArrayList<>();
@@ -46,7 +44,7 @@ public class Task implements Serializable {
     public boolean isComplete() {
         return status == COMPLETE;
     }
-
+    // returns true if no incomplete sub tasks exist
     public boolean setComplete() {
         status = COMPLETE;
         boolean deepComplete = true;    // true if all sub tasks are complete
@@ -58,12 +56,14 @@ public class Task implements Serializable {
         status = INCOMPLETE;
     }
 
+
     public String getTitle() {
         return title;
     }
     public void setTitle(String title) {
         this.title = title;
     }
+
 
     public String getDetails() {
         return details;
@@ -72,45 +72,46 @@ public class Task implements Serializable {
         this.details = details;
     }
 
-    public LocalDateTime getDueTime() {
-        return dueTime;
+
+    public LocalDateTime getDueDateTime() {
+        return dueDateTime;
     }
-    public void setDueTime(LocalDateTime dueTime) {
-        this.dueTime = dueTime;
+    public void setDueDateTime(LocalDateTime dueDateTime) {
+        this.dueDateTime = dueDateTime;
     }
-    public String getFormattedDueTime() {
-        if (dueTime == null) return "";
+    public String getFormattedDueDateTime() {
+        if (dueDateTime == null) return "";
         String ret = "";
         // check if today, tomorrow or yesterday :
         LocalDateTime today = LocalDateTime.now();
         LocalDateTime yesterday = today.minusDays(1);
         LocalDateTime tomorrow = today.plusDays(1);
-        if (today.truncatedTo(ChronoUnit.DAYS).equals(dueTime.truncatedTo(ChronoUnit.DAYS)))
+        if (today.truncatedTo(ChronoUnit.DAYS).equals(dueDateTime.truncatedTo(ChronoUnit.DAYS)))
             ret = "Today";
-        else if (yesterday.truncatedTo(ChronoUnit.DAYS).equals(dueTime.truncatedTo(ChronoUnit.DAYS)))
+        else if (yesterday.truncatedTo(ChronoUnit.DAYS).equals(dueDateTime.truncatedTo(ChronoUnit.DAYS)))
             ret = "Yesterday";
-        else if (tomorrow.truncatedTo(ChronoUnit.DAYS).equals(dueTime.truncatedTo(ChronoUnit.DAYS)))
+        else if (tomorrow.truncatedTo(ChronoUnit.DAYS).equals(dueDateTime.truncatedTo(ChronoUnit.DAYS)))
             ret = "Tomorrow";
-        else if (today.getYear() != dueTime.getYear())
-            ret = dueTime.format(DateTimeFormatter.ofPattern("EEE, dd MMM yy"));
-        else if (today.getMonth() != dueTime.getMonth())
-            ret = dueTime.format(DateTimeFormatter.ofPattern("EEE, dd MMM"));
+        else if (today.getYear() != dueDateTime.getYear())
+            ret = dueDateTime.format(DateTimeFormatter.ofPattern("EEE, dd MMM yy"));
+        else if (today.getMonth() != dueDateTime.getMonth())
+            ret = dueDateTime.format(DateTimeFormatter.ofPattern("EEE, dd MMM"));
         else
-            ret = dueTime.format(DateTimeFormatter.ofPattern("EEE, dd"));
+            ret = dueDateTime.format(DateTimeFormatter.ofPattern("EEE, dd"));
         // if timeSet add it to string
         if (timeSet)
-            ret = ret + dueTime.format(DateTimeFormatter.ofPattern(", HH:mm"));
+            ret = ret + dueDateTime.format(DateTimeFormatter.ofPattern(", HH:mm"));
         return ret;
     }
-
     public String getFormattedDue_Date() {
-        if (dueTime == null) return "";
-        return dueTime.format(DateTimeFormatter.ofPattern("EEE, dd MMM yy"));
+        if (dueDateTime == null) return "";
+        return dueDateTime.format(DateTimeFormatter.ofPattern("EEE, dd MMM yy"));
     }
     public String getFormattedDue_Time() {
         if (!timeSet) return "";
-        return dueTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+        return dueDateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
+
 
     public boolean isTimeSet() {
         return timeSet;
@@ -119,6 +120,7 @@ public class Task implements Serializable {
         this.timeSet = timeSet;
     }
 
+
     public long getTimeCreated() {
         return timeCreated;
     }
@@ -126,58 +128,96 @@ public class Task implements Serializable {
     // if no date is set in in future
     public boolean isInPast() {
         if (!timeSet)
-            return dueTime != null && dueTime.isBefore(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS));
-        return dueTime != null && dueTime.isBefore(LocalDateTime.now());
+            return dueDateTime != null && dueDateTime.isBefore(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS));
+        return dueDateTime != null && dueDateTime.isBefore(LocalDateTime.now());
     }
+
 
     /*************************************************
      * functions related to SubTasks
      *************************************************/
 
-    // Add sub task
-    public void addSubTask(SubTask subTask) {
+    // adding sub task to the task
+    // returns index at which sub task was added
+    public int addSubTask(SubTask subTask) {
         if (subTask == null)
             throw new IllegalArgumentException("Argument to addSubTask() is null!");
-        if (subTask.isComplete()) completeSubTasks.add(subTask);
-        else incompleteSubTasks.add(subTask);
+        if (subTask.isComplete()) {
+            completeSubTasks.add(subTask);
+            return completeSubTasks.size() - 1;
+        }
+        else {
+            incompleteSubTasks.add(subTask);
+            return incompleteSubTasks.size() - 1;
+        }
+    }
+    public void addSubTask(SubTask subTask, int index) {
+        if (subTask == null)
+            throw new IllegalArgumentException("Argument to addSubTask() is null!");
+        if (subTask.isComplete()) {
+            if (index < 0 || index > completeSubTasks.size())
+                throw new IllegalArgumentException("Index " + index + " to addSubTask is" +
+                        " out of range for size " + completeSubTasks.size());
+            completeSubTasks.add(index, subTask);
+        } else {
+            if (index < 0 || index > incompleteSubTasks.size())
+                throw new IllegalArgumentException("Index " + index + " to addSubTask is" +
+                        " out of range for size " + incompleteSubTasks.size());
+            incompleteSubTasks.add(index, subTask);
+        }
     }
 
-    // delete sub task
-    public void deleteSubTask(SubTask subTask) {
-        if (subTask.isComplete()) completeSubTasks.remove(subTask);
-        else incompleteSubTasks.remove(subTask);
+
+    // deleting sub task from the task:
+    // returns index from which task was deleted
+    public int deleteSubTask(SubTask subTask) {
+        int deleteFrom;
+        if (subTask.isComplete()) {
+            deleteFrom = completeSubTasks.indexOf(subTask);
+            completeSubTasks.remove(subTask);
+        }
+        else {
+            deleteFrom = incompleteSubTasks.indexOf(subTask);
+            incompleteSubTasks.remove(subTask);
+        }
+        return deleteFrom;
     }
-    public void deleteIncompleteSubTask(int index) {
+    public SubTask deleteIncompleteSubTask(int index) {
         if (index < 0 || index >= incompleteSubTasks.size())
             throw new IllegalArgumentException("Index "+index+" to deleteSubTask is out of range for size "+incompleteSubTasks.size()+"!");
-        incompleteSubTasks.remove(index);
+        return incompleteSubTasks.remove(index);
     }
-
-    public void undoDeleteIncompleteSubTask(SubTask subTask, int index) {
-        incompleteSubTasks.add(index, subTask);
-    }
-
-    public void deleteCompleteSubTask(int index) {
+    public SubTask deleteCompleteSubTask(int index) {
         if (index < 0 || index >= completeSubTasks.size())
             throw new IllegalArgumentException("Index "+index+" to deleteSubTask is out of range for size "+completeSubTasks.size()+"!");
-        completeSubTasks.remove(index);
+        return completeSubTasks.remove(index);
     }
 
-    public void undoDeleteCompleteSubTask(SubTask subTask, int index) {
-        completeSubTasks.add(index, subTask);
-    }
 
-    // get the sub task at index
+    // get sub task
     public SubTask getIncompleteSubTaskAt(int index) {
-        if (index < 0 || index > incompleteSubTasks.size()) throw new IllegalArgumentException("Index wrong!");
         return incompleteSubTasks.get(index);
     }
     public SubTask getCompleteSubTaskAt(int index) {
-        if (index < 0 || index > completeSubTasks.size()) throw new IllegalArgumentException("Index wrong!");
         return completeSubTasks.get(index);
     }
 
-    // get sub tasks count
+
+    // complete the sub task at index
+    public int completeSubTaskAt(int index) {
+        SubTask subTask = deleteIncompleteSubTask(index);
+        subTask.setComplete();
+        return addSubTask(subTask);
+    }
+    // incomplete the sub task at index
+    public int incompleteSubTaskAt(int index) {
+        SubTask subTask = deleteCompleteSubTask(index);
+        subTask.setIncomplete();
+        return addSubTask(subTask);
+    }
+
+
+    // get sub task count
     public int getIncompleteSubTasksCount() {
         return incompleteSubTasks.size();
     }
@@ -185,48 +225,19 @@ public class Task implements Serializable {
         return completeSubTasks.size();
     }
 
-    // complete the sub task at index i
-    public void completeSubTaskAt(int index) {
-        if (index < 0 || index >= incompleteSubTasks.size()) throw new IllegalArgumentException("Index out of bounds");
-        SubTask subTask = incompleteSubTasks.get(index);
-        incompleteSubTasks.remove(index);
-        subTask.setComplete();
-        completeSubTasks.add(subTask);
-    }
 
-    public void undoCompleteSubTask(SubTask subTask, int index) {
-        completeSubTasks.remove(subTask);
-        subTask.setComplete();
-        incompleteSubTasks.add(index, subTask);
-    }
-
-    // change the title of incomplete task
+    // change the title of sub task
     public void changeIncompleteSubTaskTitle(int index, String title) {
         incompleteSubTasks.get(index).setTitle(title);
     }
-
     public void changeCompleteSubTaskTitle(int index, String title) {
         completeSubTasks.get(index).setTitle(title);
     }
 
-    public void incompleteSubTaskAt(int index) {
-        if (index < 0 || index >= completeSubTasks.size()) throw new IllegalArgumentException("Index out of bounds");
-        SubTask subTask = completeSubTasks.get(index);
-        completeSubTasks.remove(index);
-        subTask.setComplete();
-        incompleteSubTasks.add(subTask);
-    }
-
-    public void undoIncompleteSubTask(SubTask subTask, int index) {
-        incompleteSubTasks.remove(subTask);
-        subTask.setComplete();
-        completeSubTasks.add(index, subTask);
-    }
 
     public void swapIncompleteSubTasks(int index1, int index2) {
         Collections.swap(incompleteSubTasks, index1, index2);
     }
-
     public void swapCompleteSubTasks(int index1, int index2) {
         Collections.swap(completeSubTasks, index1, index2);
     }
@@ -235,26 +246,26 @@ public class Task implements Serializable {
     /***************************************************
      *  Comparators
      ***************************************************/
+
     public static class DueDate implements Comparator<Task>, Serializable {
         @Override
         public int compare(Task o1, Task o2) {
-            if (o1.dueTime == null && o2.dueTime == null)
+            if (o1.dueDateTime == null && o2.dueDateTime == null)
                 return 0;
-            if (o1.dueTime == null)
+            if (o1.dueDateTime == null)
                 return +1;
-            if (o2.dueTime == null)
+            if (o2.dueDateTime == null)
                 return -1;
-            if (o1.dueTime.truncatedTo(ChronoUnit.DAYS).equals(o2.dueTime.truncatedTo(ChronoUnit.DAYS))) {
+            if (o1.dueDateTime.truncatedTo(ChronoUnit.DAYS).equals(o2.dueDateTime.truncatedTo(ChronoUnit.DAYS))) {
                 if (!o1.timeSet && !o2.timeSet) return 0;
                 else if (!o1.timeSet) return +1;
                 else if (!o2.timeSet) return -1;
             }
-            return o1.dueTime.compareTo(o2.dueTime);
+            return o1.dueDateTime.compareTo(o2.dueDateTime);
         }
     }
 
     public static class CreatedTime implements Comparator<Task>, Serializable {
-
         @Override
         public int compare(Task o1, Task o2) {
             return Long.compare(o1.getTimeCreated(), o2.getTimeCreated());

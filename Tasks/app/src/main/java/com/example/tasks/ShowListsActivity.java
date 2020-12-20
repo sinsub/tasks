@@ -96,9 +96,9 @@ public class ShowListsActivity extends AppCompatActivity implements OnListItemCl
                 makeToast("Provide a valid List title");
                 alertDialog.dismiss();
             } else {
-                manager.addNewList(title);
+                int insertedAt = manager.addNewList(title);
                 makeToast("New List added");
-                recyclerAdapterTL.notifyDataSetChanged();
+                recyclerAdapterTL.notifyItemInserted(insertedAt);
                 alertDialog.dismiss();
             }
         });

@@ -55,7 +55,6 @@ public class RecyclerAdapterTL extends RecyclerView.Adapter<RecyclerAdapterTL.Vi
             listNameTV = (TextView) itemView.findViewById(R.id.task_list_title_tv);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.task_list_item_container);
             listDueTasks = (TextView) itemView.findViewById(R.id.task_list_tasks_due);
-
             linearLayout.setOnClickListener(v -> listener.openListAtIndex(getAdapterPosition()));
         }
     }

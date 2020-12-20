@@ -183,7 +183,9 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         }
         taskTitleET.setText(task.getTitle());
         taskDetailET.setText(task.getDetails());
-        taskDueDateTV.setText(task.getFormattedDueTime());
+        taskDueDateTV.setText(task.getFormattedDueDateTime());
+        if (task.isInPast()) taskDueDateTV.setTextColor(this.getResources().getColor(R.color.colorRedText));
+        else taskDueDateTV.setTextColor(this.getResources().getColor(R.color.colorBlueText));
 
         recyclerAdapterIST = new RecyclerAdapterIST(task, this);
         incompleteSubTasksRecyclerView.setAdapter(recyclerAdapterIST);
@@ -208,7 +210,7 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         // initial set up :
         dateTV.setText(task.getFormattedDue_Date());
         timeTV.setText(task.getFormattedDue_Time());
-        if (task.getDueTime() == null) {
+        if (task.getDueDateTime() == null) {
             removeDateBtn.setVisibility(View.GONE);
             timeTV.setVisibility(View.GONE);
             setTimeBtn.setVisibility(View.GONE);
@@ -216,9 +218,9 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
             setYear = setDay = setMonth = setHour = setMin = 0;
             isDateSet = isTimeSet = false;
         } else {
-            setYear = task.getDueTime().getYear();
-            setMonth = task.getDueTime().getMonthValue() - 1;
-            setDay = task.getDueTime().getDayOfMonth();
+            setYear = task.getDueDateTime().getYear();
+            setMonth = task.getDueDateTime().getMonthValue() - 1;
+            setDay = task.getDueDateTime().getDayOfMonth();
             isDateSet = true;
             setHour = setMin = 0;
             isTimeSet = false;
@@ -228,8 +230,8 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
             setHour = setMin = 0;
             isTimeSet = false;
         } else {
-            setHour = task.getDueTime().getHour();
-            setMin = task.getDueTime().getMinute();
+            setHour = task.getDueDateTime().getHour();
+            setMin = task.getDueDateTime().getMinute();
             isTimeSet = true;
         }
 
@@ -258,10 +260,10 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
                 mday = setDay;
                 mmonth = setMonth;
                 myear = setYear;
-            } else if (task.getDueTime() != null) {
-                mday = task.getDueTime().getDayOfMonth();
-                mmonth = task.getDueTime().getMonthValue() - 1;
-                myear = task.getDueTime().getYear();
+            } else if (task.getDueDateTime() != null) {
+                mday = task.getDueDateTime().getDayOfMonth();
+                mmonth = task.getDueDateTime().getMonthValue() - 1;
+                myear = task.getDueDateTime().getYear();
             } else {
                 mday = cldr.get(Calendar.DAY_OF_MONTH);
                 mmonth = cldr.get(Calendar.MONTH);
@@ -294,8 +296,8 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
                 mHour = setHour;
                 mMinute = setMin;
             } else if (task.isTimeSet()) {
-                mHour = task.getDueTime().getHour();
-                mMinute = task.getDueTime().getMinute();
+                mHour = task.getDueDateTime().getHour();
+                mMinute = task.getDueDateTime().getMinute();
             } else {
                 mHour = c.get(Calendar.HOUR_OF_DAY);
                 mMinute = c.get(Calendar.MINUTE);
@@ -324,17 +326,15 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
         saveBtn.setOnClickListener(v -> {
             LocalDateTime taskDateTime = null;
             if (isDateSet) taskDateTime = LocalDateTime.of(setYear, setMonth + 1, setDay, setHour, setMin);
-            task.setDueTime(taskDateTime);
+            task.setDueDateTime(taskDateTime);
             task.setTimeSet(isTimeSet);
             alertDialog.dismiss();
             setView();
         });
         mView.setBackgroundColor(getResources().getColor(R.color.colorSecondaryBg));
         alert.setView(mView);
-
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
-
         alertDialog.show();
     }
 
@@ -364,8 +364,8 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
                 makeToast("Provide a valid title");
                 alertDialog.dismiss();
             } else {
-                manager.addSubTask(title, task);
-                recyclerAdapterIST.notifyDataSetChanged();
+                int insertedAt = manager.addSubTask(title, task);
+                recyclerAdapterIST.notifyItemInserted(insertedAt);
                 alertDialog.dismiss();
                 makeToast("Sub task added");
             }
@@ -446,16 +446,17 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
     }
 
     private void incompleteSubTask(final int position) {
-        final SubTask subTask = manager.incompleteSubTaskOf(task, position);
+        final SubTask subTask = task.getCompleteSubTaskAt(position);
+        int insertedAt = manager.incompleteSubTaskOf(task, position);
         recyclerAdapterCST.notifyItemRemoved(position);
-        recyclerAdapterIST.notifyDataSetChanged();
+        recyclerAdapterIST.notifyItemInserted(insertedAt);
         Snackbar snackbar = Snackbar.make(completeSubTaskRecyclerView, R.string.SubTaskMarkedAsIncomplete, Snackbar.LENGTH_LONG);
         snackbar.setAnchorView(findViewById(R.id.task_view_bottom_bar));
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
         snackbar.setAction(R.string.Undo, v -> {
-            manager.undoIncompleteSubTaskOf(task, subTask, position);
+            int deletedFrom =  manager.undoIncompleteSubTaskOf(task, subTask, position);
             recyclerAdapterCST.notifyItemInserted(position);
-            recyclerAdapterIST.notifyDataSetChanged();
+            recyclerAdapterIST.notifyItemRemoved(deletedFrom);
         });
         View sbView = snackbar.getView();
         sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
@@ -463,16 +464,17 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
     }
 
     private void completeSubTask(final int position) {
-        final SubTask subTask = manager.completeSubTaskOf(task, position);
+        final SubTask subTask = task.getIncompleteSubTaskAt(position);
+        int insertedAt = manager.completeSubTaskOf(task, position);
         recyclerAdapterIST.notifyItemRemoved(position);
-        recyclerAdapterCST.notifyDataSetChanged();
+        recyclerAdapterCST.notifyItemInserted(insertedAt);
         Snackbar snackbar = Snackbar.make(incompleteSubTasksRecyclerView, R.string.SubTaskMarkedAsComplete, Snackbar.LENGTH_LONG);
         snackbar.setAnchorView(findViewById(R.id.task_view_bottom_bar));
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
         snackbar.setAction(R.string.Undo, v -> {
-            manager.undoCompleteSubTaskOf(task, subTask, position);
+            int deletedFrom = manager.undoCompleteSubTaskOf(task, subTask, position);
             recyclerAdapterIST.notifyItemInserted(position);
-            recyclerAdapterCST.notifyDataSetChanged();
+            recyclerAdapterCST.notifyItemRemoved(deletedFrom);
         });
         View sbView = snackbar.getView();
         sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
@@ -687,5 +689,4 @@ public class TaskViewActivity extends AppCompatActivity implements OnSubTaskItem
             viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(TaskViewActivity.this, R.color.colorPrimaryBg));
         }
     };
-
 }

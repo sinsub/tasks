@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // setting up the colour mode;
+        // setting up day/night mode;
         Manager manager = new Manager(this);
         User user = manager.getUser();
         if (user.isDarkModeOn()) {
@@ -25,9 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-
-
-        // Start Activity :
+        // Start List Activity :
         Intent LVAIntent = new Intent(getApplicationContext(), ListViewActivity.class);
         startActivity(LVAIntent);
 

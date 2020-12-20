@@ -10,9 +10,10 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:padding="16dp"
         android:text="@string/MoveTaskTo"
         android:textColor="@color/colorAccentSecondary"
+        android:background="@color/colorSecondaryBg"
         android:textSize="18sp" />
 
     <View
@@ -24,5 +25,7 @@
         android:id="@+id/move_task_to_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="40dp"/>
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="64dp"/>
 </LinearLayout>

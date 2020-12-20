@@ -68,11 +68,11 @@ public class RecyclerAdapterIT extends RecyclerView.Adapter<RecyclerAdapterIT.Vi
             holder.taskDetailsTV.setVisibility(View.VISIBLE);
             holder.taskDetailsTV.setText(details);
         }
-        if (t.getDueTime() == null)
+        if (t.getDueDateTime() == null)
             holder.taskDueDateTimeTV.setVisibility(View.GONE);
         else {
             holder.taskDueDateTimeTV.setVisibility(View.VISIBLE);
-            holder.taskDueDateTimeTV.setText(t.getFormattedDueTime());
+            holder.taskDueDateTimeTV.setText(t.getFormattedDueDateTime());
             if (t.isInPast()) holder.taskDueDateTimeTV.setTextColor(context.getResources().getColor(R.color.colorRedText));
             else holder.taskDueDateTimeTV.setTextColor(context.getResources().getColor(R.color.colorBlueText));
         }
@@ -122,12 +122,12 @@ public class RecyclerAdapterIT extends RecyclerView.Adapter<RecyclerAdapterIT.Vi
 
                 @Override
                 public void onSubTaskCompleteButtonClick(final int subTaskPosition, boolean complete) {
-                    completeSubTask(subTaskPosition, complete);
+                    completeSubTask(subTaskPosition);
                 }
 
                 @Override
                 public void onSubTaskDeleteButtonClick(final int subTaskPosition, boolean complete) {
-                    deleteSubTask(subTaskPosition, complete);
+                    deleteSubTask(subTaskPosition);
                 }
 
                 @Override
@@ -137,7 +137,7 @@ public class RecyclerAdapterIT extends RecyclerView.Adapter<RecyclerAdapterIT.Vi
             };
         }
 
-        private void deleteSubTask(final int subTaskPosition, boolean complete) {
+        private void deleteSubTask(final int subTaskPosition) {
             final SubTask subTask = taskList.getIncompleteTask(getAdapterPosition()).getIncompleteSubTaskAt(subTaskPosition);
             manager.deleteIncompleteSubTask(manager.getOpenList().getIncompleteTask(getAdapterPosition()), subTaskPosition);
             recyclerAdapterNIST.notifyItemRemoved(subTaskPosition);
@@ -155,8 +155,9 @@ public class RecyclerAdapterIT extends RecyclerView.Adapter<RecyclerAdapterIT.Vi
             snackbar.show();
         }
 
-        private void completeSubTask(final int subTaskPosition, boolean complete) {
-            final SubTask subTask = manager.completeSubTaskOf(manager.getOpenList().getIncompleteTask(getAdapterPosition()), subTaskPosition);
+        private void completeSubTask(final int subTaskPosition) {
+            final SubTask subTask = manager.getOpenList().getIncompleteTask(getAdapterPosition()).getIncompleteSubTaskAt(subTaskPosition);
+            int insertedAt = manager.completeSubTaskOf(manager.getOpenList().getIncompleteTask(getAdapterPosition()), subTaskPosition);
             recyclerAdapterNIST.notifyItemRemoved(subTaskPosition);
             Snackbar snackbar = Snackbar.make(subTasksRV, R.string.SubTaskMarkedAsComplete, Snackbar.LENGTH_LONG);
             snackbar.setAnchorView(addTaskFAB);

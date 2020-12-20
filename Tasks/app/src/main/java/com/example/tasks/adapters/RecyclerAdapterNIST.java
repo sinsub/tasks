@@ -1,5 +1,6 @@
 package com.example.tasks.adapters;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,9 @@ public class RecyclerAdapterNIST extends RecyclerView.Adapter<RecyclerAdapterNIS
             deleteButton = (ImageButton) itemView.findViewById(R.id.sub_task_item_delete_image_button);
             subTaskTitleTV = (TextView) itemView.findViewById(R.id.sub_task_item_title_tv);
             itemContainer = (ConstraintLayout) itemView.findViewById(R.id.sub_task_item_container);
+
+            subTaskTitleTV.setMaxLines(1);
+            subTaskTitleTV.setEllipsize(TextUtils.TruncateAt.END);
 
             completeButton.setOnClickListener(v -> listener.onSubTaskCompleteButtonClick(getAdapterPosition(), false));
             deleteButton.setOnClickListener(v -> listener.onSubTaskDeleteButtonClick(getAdapterPosition(), false));

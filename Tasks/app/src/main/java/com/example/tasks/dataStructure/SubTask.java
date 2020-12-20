@@ -38,8 +38,4 @@ public class SubTask implements Serializable {
     public void setIncomplete() {
         status = INCOMPLETE;
     }
-
-    public long getTimeCreated() {
-        return timeCreated;
-    }
 }

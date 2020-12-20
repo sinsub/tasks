@@ -83,7 +83,7 @@
             android:id="@+id/back_image_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5"
+            android:layout_weight="4"
             android:background="@null"
             app:srcCompat="@drawable/ic_baseline_arrow_back_24_accent" />
 
@@ -91,14 +91,14 @@
             android:id="@+id/show_list_view_settings_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5"
+            android:layout_weight="4"
             android:background="@null"
             app:srcCompat="@drawable/ic_baseline_settings_24_white" />
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5" />
+            android:layout_weight="4" />
 
         <Space
             android:layout_width="match_parent"

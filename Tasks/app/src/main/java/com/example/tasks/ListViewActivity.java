@@ -82,7 +82,6 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         ImageButton optionsButton = (ImageButton) findViewById(R.id.list_view_options);
         optionsButton.setOnClickListener(v -> showOptions());
 
-
         // Recycler views
         //  Recycler view for incomplete tasks
         recyclerViewI = (RecyclerView) findViewById(R.id.tasks_recycler_view);
@@ -117,7 +116,6 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         myAdapterC = new RecyclerAdapterCT(manager.getOpenList(), this);
         recyclerViewC.setAdapter(myAdapterC);
     }
-
 
 
     // Methods related to task:
@@ -156,11 +154,8 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             timeSet = false;
         });
 
-
         setYear = setDay = setMonth = setHour = setMinute = 0;
         dateSet = timeSet = false;
-
-
 
         taskTitleET.setOnFocusChangeListener((v, hasFocus) -> taskTitleET.post(() -> {
             InputMethodManager inputMethodManager= (InputMethodManager) ListViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -189,7 +184,6 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
                         }
                     }, myear, mmonth, mday);
             datePickerDialog.show();
-
         });
 
         setTaskTime.setOnClickListener(v -> {
@@ -223,23 +217,21 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             } else {
                 LocalDateTime taskDateTime = null;
                 if (dateSet) taskDateTime = LocalDateTime.of(setYear, setMonth + 1, setDay, setHour, setMinute);
-                manager.addTask(name, detail, taskDateTime, timeSet);
+                int addedAtIndex = manager.addTask(name, detail, taskDateTime, timeSet);
                 alertDialog.dismiss();
+
                 Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.NewTaskAdded, Snackbar.LENGTH_LONG);
                 snackbar.setAnchorView(addTaskFAB);
                 View sbView = snackbar.getView();
                 sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
                 snackbar.show();
-                // change to : myAdapterI.notifyItemInserted(position);
-                myAdapterI.notifyDataSetChanged();
+                myAdapterI.notifyItemInserted(addedAtIndex);
             }
         });
 
         alert.setView(mView);
-
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
-
         alertDialog.show();
         taskTitleET.requestFocus();
     }
@@ -271,14 +263,13 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
             snackbar.show();
             myAdapterI.notifyItemRemoved(position);
-            myAdapterI.notifyItemRangeChanged(position, myAdapterI.getItemCount());
             alertDialog.cancel();
         });
 
         negativeButton.setText(R.string.Cancel);
         negativeButton.setOnClickListener(v -> {
             alertDialog.cancel();
-            setListView();
+            myAdapterI.notifyItemChanged(position);
         });
         alertDialog.show();
     }
@@ -309,15 +300,13 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
             snackbar.show();
             myAdapterC.notifyItemRemoved(position);
-            myAdapterC.notifyItemRangeChanged(position, myAdapterC.getItemCount());
             alertDialog.cancel();
         });
 
         negativeButton.setText(R.string.Cancel);
         negativeButton.setOnClickListener(v -> {
             alertDialog.cancel();
-//            myAdapterC.notifyDataSetChanged();
-            setListView();
+            myAdapterC.notifyItemChanged(position);
         });
         alertDialog.show();
     }
@@ -362,48 +351,47 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     @Override
     public void completeTask(final int position) {
         final Task task = manager.getOpenList().getIncompleteTask(position);
-        boolean deepComplete = manager.setTaskComplete(position);
+        boolean deepComplete = task.getIncompleteSubTasksCount() == 0;
+        int insertedAt = manager.setTaskComplete(position);
         String mssg = "Task Marked Complete";
         if (!deepComplete) {
            mssg = mssg + "\nSome sub-tasks were incomplete.";
         }
         myAdapterI.notifyItemRemoved(position);
-        myAdapterC.notifyDataSetChanged();
+        myAdapterC.notifyItemInserted(insertedAt);
 
         Snackbar snackbar = Snackbar.make(recyclerViewI, mssg, Snackbar.LENGTH_LONG);
         snackbar.setAnchorView(addTaskFAB);
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
         snackbar.setAction(R.string.Undo, v -> {
-            manager.undoSetTaskComplete(task ,position);
+            int deletedFrom = manager.undoSetTaskComplete(task ,position);
             myAdapterI.notifyItemInserted(position);
-            myAdapterC.notifyDataSetChanged();
+            myAdapterC.notifyItemRemoved(deletedFrom);
         });
         View sbView = snackbar.getView();
         sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
         snackbar.show();
-
     }
 
     // Incomplete a completed task on checkbox click or swipe
     @Override
     public void incompleteTask(final int position) {
         final Task task = manager.getOpenList().getCompletedTask(position);
-        manager.setTaskIncomplete(position);
+        int insertedAt = manager.setTaskIncomplete(position);
         myAdapterC.notifyItemRemoved(position);
-        myAdapterI.notifyDataSetChanged();
+        myAdapterI.notifyItemInserted(insertedAt);
 
         Snackbar snackbar = Snackbar.make(recyclerViewC, R.string.TaskMarkedAsIncomplete, Snackbar.LENGTH_LONG);
         snackbar.setAnchorView(addTaskFAB);
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentSecondary));
         snackbar.setAction(R.string.Undo, v -> {
-            manager.undoSetTaskIncomplete(task ,position);
+            int deletedFrom = manager.undoSetTaskIncomplete(task ,position);
             myAdapterC.notifyItemInserted(position);
-            myAdapterI.notifyDataSetChanged();
+            myAdapterI.notifyItemRemoved(deletedFrom);
         });
         View sbView = snackbar.getView();
         sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
         snackbar.show();
-
     }
 
     // To add the "Completed" text view only when there are completed items
@@ -422,8 +410,6 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         // for incomplete sub task
         startTaskActivity(taskPosition, complete);
     }
-
-
 
 
     // function related to UI
@@ -490,8 +476,6 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     }
 
 
-
-
     // Methods related to the list :
     // show dialog to rename list
     private void renameList() {
@@ -500,17 +484,14 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
 
         TextView header = (TextView) mView.findViewById(R.id.new_task_list_cd_header);
         header.setText(R.string.RenameList);
-
         final EditText taskListTitleET = (EditText) mView.findViewById(R.id.new_task_list_title_ET);
         Button renameListButton = (Button) mView.findViewById(R.id.add_new_list_button);
 
         alert.setView(mView);
-
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
 
         taskListTitleET.setText(manager.getListTitle());
-
         taskListTitleET.setOnFocusChangeListener((v, hasFocus) -> taskListTitleET.post(() -> {
             InputMethodManager inputMethodManager= (InputMethodManager) ListViewActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.showSoftInput(taskListTitleET, InputMethodManager.SHOW_IMPLICIT);
@@ -544,7 +525,6 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         alert.setView(mView);
         String message = "This list will be deleted permanently.";
         messageTextView.setText(message);
-
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
 
@@ -601,10 +581,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         });
 
         dialog.show();
-
     }
-
-
 
 
     // Methods related to staring a new activity
@@ -693,6 +670,9 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
     ItemTouchHelper.SimpleCallback simpleCallbackComplete = new ItemTouchHelper.SimpleCallback((ItemTouchHelper.UP | ItemTouchHelper.DOWN), ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            if (manager.getOpenListComparator() != Manager.MY_ORDER)
+                return false;
+
             // getting positions
             int fromPosition = viewHolder.getAdapterPosition();
             int toPosition = target.getAdapterPosition();
@@ -743,9 +723,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         }
     };
 
-
     public void makeToast(String str) {
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
-
 }

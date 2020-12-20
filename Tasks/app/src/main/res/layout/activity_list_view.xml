@@ -41,6 +41,7 @@
                         android:hint="@string/ListTitle"
                         android:textColorHint="@color/colorUnavailableText"
                         android:maxLines="1"
+                        android:ellipsize="end"
                         android:textAlignment="center"
                         android:textColor="@color/colorAccentSecondary"
                         android:textSize="24sp" />
@@ -119,7 +120,7 @@
             android:id="@+id/show_lists_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5"
+            android:layout_weight="4"
             android:background="@null"
             app:srcCompat="@drawable/ic_baseline_menu_24_white" />
 
@@ -127,14 +128,14 @@
             android:id="@+id/list_view_options"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5"
+            android:layout_weight="4"
             android:background="@null"
             app:srcCompat="@drawable/ic_baseline_more_horiz_24_white" />
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5" />
+            android:layout_weight="4" />
 
         <Space
             android:layout_width="match_parent"
