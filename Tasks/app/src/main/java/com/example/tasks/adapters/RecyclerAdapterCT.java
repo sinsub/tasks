@@ -58,7 +58,6 @@ public class RecyclerAdapterCT extends RecyclerView.Adapter<RecyclerAdapterCT.Vi
         } else {
             listener.setCompletedTaskListTitle("Completed");
         }
-
         return count;
     }
 

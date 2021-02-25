@@ -257,12 +257,12 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         positiveButton.setText(R.string.Delete);
         positiveButton.setOnClickListener(v -> {
             manager.deleteIncompleteTask(position);
+            myAdapterI.notifyItemRemoved(position);
             Snackbar snackbar = Snackbar.make(recyclerViewI, R.string.OneITDeleted, Snackbar.LENGTH_LONG);
             snackbar.setAnchorView(addTaskFAB);
             View sbView = snackbar.getView();
             sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSecondaryBg));
             snackbar.show();
-            myAdapterI.notifyItemRemoved(position);
             alertDialog.cancel();
         });
 
@@ -656,6 +656,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
             super.onSelectedChanged(viewHolder, actionState);
             if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
                 viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(ListViewActivity.this, R.color.colorSecondaryBg));
+                viewHolder.itemView.findViewById(R.id.task_card_view_sub_task_recycler_view).setVisibility(View.GONE);
             }
         }
 
@@ -663,6 +664,7 @@ public class ListViewActivity extends AppCompatActivity implements TaskCardViewL
         public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
             super.clearView(recyclerView, viewHolder);
             viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(ListViewActivity.this, R.color.colorPrimaryBg));
+            viewHolder.itemView.findViewById(R.id.task_card_view_sub_task_recycler_view).setVisibility(View.VISIBLE);
         }
     };
 

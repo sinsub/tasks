@@ -34,7 +34,7 @@ public class Manager {
     }
 
     /***************************************************
-     *  Functions relating List that is currently open
+     *  Functions for openList
      ***************************************************/
 
     public void setOpenList() {

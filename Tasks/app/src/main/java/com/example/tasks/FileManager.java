@@ -25,7 +25,7 @@ public class FileManager {
     }
 
     public static User readUser(Context context) {
-        User user = new User();
+        User user = null;
         try {
             FileInputStream fis = context.openFileInput(FILENAME);
             ObjectInputStream ois = new ObjectInputStream(fis);

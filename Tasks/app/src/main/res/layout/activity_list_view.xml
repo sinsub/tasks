@@ -44,7 +44,9 @@
                         android:ellipsize="end"
                         android:textAlignment="center"
                         android:textColor="@color/colorAccentSecondary"
-                        android:textSize="24sp" />
+                        android:textSize="24sp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="24dp"/>
 
                 </LinearLayout>
 
